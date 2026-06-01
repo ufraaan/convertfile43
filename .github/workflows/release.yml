@@ -23,6 +23,11 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           xcodegen generate
 
+      - name: Install binary dependencies
+        run: |
+          brew install imagemagick ghostscript
+          bash "$GITHUB_WORKSPACE/Middleware/Scripts/download-binaries.sh"
+
       - name: Build
         run: |
           cd "$GITHUB_WORKSPACE"
