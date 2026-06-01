@@ -49,7 +49,7 @@ struct ConversionJobRow: View {
                     NSWorkspace.shared.activateFileViewerSelecting([job.outputURL])
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(.tint)
             }
         }
         .padding(.vertical, 4)
