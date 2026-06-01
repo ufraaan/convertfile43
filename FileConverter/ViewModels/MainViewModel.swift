@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-@Observable
+@MainActor @Observable
 final class MainViewModel {
     var isTargeted = false
     var selectedPreset: ConversionPreset?

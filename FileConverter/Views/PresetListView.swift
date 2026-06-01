@@ -35,7 +35,7 @@ struct PresetListView: View {
                             viewModel.editPreset(preset)
                         }
                         .buttonStyle(.plain)
-                        .foregroundStyle(.accentColor)
+                        .foregroundStyle(Color.accentColor)
 
                         Button("Delete") {
                             viewModel.deletePreset(preset, settings: settings)

@@ -1,6 +1,6 @@
 import Foundation
 
-struct ConversionSettings: Codable, Sendable {
+struct ConversionSettings: Codable, Sendable, Hashable {
     var quality: Double?
     var bitrate: String?
     var sampleRate: Int?

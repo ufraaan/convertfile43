@@ -1,6 +1,7 @@
 import Foundation
+import AppKit
 
-@Observable
+@MainActor @Observable
 final class ConversionOrchestrator {
     var jobs: [ConversionJob] = []
     var isProcessing = false
@@ -31,7 +32,7 @@ final class ConversionOrchestrator {
         jobs.append(job)
 
         if !isProcessing {
-            Task { await processNext() }
+            Task { @MainActor in processNext() }
         }
     }
 
@@ -88,7 +89,7 @@ final class ConversionOrchestrator {
                     if self.settings.revealInFinderOnComplete {
                         NSWorkspace.shared.activateFileViewerSelecting([self.jobs[idx].outputURL])
                     }
-                    Task { await self.processNext() }
+                    Task { self.processNext() }
                 }
             } catch {
                 await MainActor.run {
@@ -97,13 +98,13 @@ final class ConversionOrchestrator {
                     self.jobs[idx].errorMessage = error.localizedDescription
                     self.isProcessing = false
                     NotificationService.sendErrorNotification(job: self.jobs[idx])
-                    Task { await self.processNext() }
+                    Task { self.processNext() }
                 }
             }
         }
     }
 
-    private func convert(job: ConversionJob, preset: ConversionPreset) async throws {
+    private nonisolated func convert(job: ConversionJob, preset: ConversionPreset) async throws {
         let input = job.inputURL.path
         let output = job.outputURL.path
 
@@ -117,7 +118,7 @@ final class ConversionOrchestrator {
         case .pdf:
             try await runImageMagick(input: input, output: output, settings: preset.settings)
 
-        case .jpg, .png, .webp, .ico:
+        case .avif, .jpg, .png, .webp, .ico:
             try await runImageMagick(input: input, output: output, settings: preset.settings)
 
         case .gif:
@@ -131,17 +132,17 @@ final class ConversionOrchestrator {
         }
     }
 
-    private func runFFmpeg(input: String, output: String, settings: ConversionSettings, outputType: OutputType) async throws {
+    private nonisolated func runFFmpeg(input: String, output: String, settings: ConversionSettings, outputType: OutputType) async throws {
         let args = FFmpegService.buildArguments(input: input, output: output, settings: settings, outputType: outputType)
         try await runProcess(executable: BundlePaths.ffmpeg, arguments: args)
     }
 
-    private func runImageMagick(input: String, output: String, settings: ConversionSettings) async throws {
+    private nonisolated func runImageMagick(input: String, output: String, settings: ConversionSettings) async throws {
         let args = ImageMagickService.buildArguments(input: input, output: output, settings: settings)
         try await runProcess(executable: BundlePaths.imagemagick, arguments: args)
     }
 
-    private func runLibreOffice(input: String) async throws {
+    private nonisolated func runLibreOffice(input: String) async throws {
         guard LibreOfficeService.isAvailable else {
             throw ConversionError.libreOfficeNotFound
         }
@@ -151,7 +152,7 @@ final class ConversionOrchestrator {
     }
 
     @discardableResult
-    private func runProcess(executable: String, arguments: [String]) async throws -> String {
+    private nonisolated func runProcess(executable: String, arguments: [String]) async throws -> String {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: executable)
         process.arguments = arguments

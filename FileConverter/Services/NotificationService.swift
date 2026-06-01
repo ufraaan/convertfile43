@@ -4,7 +4,7 @@ import UserNotifications
 enum NotificationService {
     static func requestPermission() async {
         let center = UNUserNotificationCenter.current()
-        try? await center.requestAuthorization(options: [.alert, .sound])
+        _ = try? await center.requestAuthorization(options: [.alert, .sound])
     }
 
     static func sendCompletionNotification(job: ConversionJob) {

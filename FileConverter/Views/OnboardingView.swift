@@ -8,7 +8,7 @@ struct OnboardingView: View {
         VStack(spacing: 24) {
             Image(systemName: "arrow.left.arrow.right.square")
                 .font(.system(size: 64))
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(Color.accentColor)
 
             Text("Welcome to File Converter")
                 .font(.largeTitle)
@@ -50,7 +50,7 @@ struct OnboardingStep: View {
                 .font(.caption)
                 .bold()
                 .frame(width: 20, height: 20)
-                .background(Circle().fill(.accentColor))
+                .background(Circle().fill(Color.accentColor))
                 .foregroundStyle(.white)
 
             Text(text)

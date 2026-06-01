@@ -1,6 +1,6 @@
 import Foundation
 
-struct ConversionPreset: Identifiable, Codable, Sendable {
+struct ConversionPreset: Identifiable, Codable, Sendable, Hashable {
     var id: UUID
     var name: String
     var inputExtensions: [String]

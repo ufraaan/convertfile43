@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct MainView: View {
     @Environment(AppSettings.self) private var settings
@@ -21,7 +22,7 @@ struct MainView: View {
         VStack(spacing: 12) {
             Image(systemName: "arrow.down.doc")
                 .font(.system(size: 36))
-                .foregroundStyle(viewModel.isTargeted ? .accentColor : .secondary)
+                .foregroundStyle(viewModel.isTargeted ? Color.accentColor : Color.secondary)
 
             Text("Drop files here or click to browse")
                 .font(.headline)
@@ -79,25 +80,31 @@ struct MainView: View {
     }
 
     private func handleDrop(providers: [NSItemProvider]) -> Bool {
-        var urls: [URL] = []
-        let group = DispatchGroup()
+        Task {
+            var urls: [URL] = []
+            for provider in providers {
+                if let url = await loadURL(from: provider) {
+                    urls.append(url)
+                }
+            }
+            await MainActor.run {
+                viewModel.handleDroppedURLs(urls, orchestrator: orchestrator, settings: settings)
+            }
+        }
+        return true
+    }
 
-        for provider in providers {
-            group.enter()
+    private func loadURL(from provider: NSItemProvider) async -> URL? {
+        await withCheckedContinuation { continuation in
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
                 if let data = item as? Data,
                    let url = URL(dataRepresentation: data, relativeTo: nil) {
-                    urls.append(url)
+                    continuation.resume(returning: url)
+                } else {
+                    continuation.resume(returning: nil)
                 }
-                group.leave()
             }
         }
-
-        group.notify(queue: .main) {
-            viewModel.handleDroppedURLs(urls, orchestrator: orchestrator, settings: settings)
-        }
-
-        return true
     }
 }
 
