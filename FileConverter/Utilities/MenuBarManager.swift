@@ -1,12 +1,10 @@
 import AppKit
-import SwiftUI
 
 @MainActor
 final class MenuBarManager: NSObject, NSMenuDelegate {
     private var settings: AppSettings?
     private var orchestrator: ConversionOrchestrator?
     private var statusItem: NSStatusItem?
-    private var windows: [NSWindow] = []
 
     func setup(settings: AppSettings, orchestrator: ConversionOrchestrator) {
         self.settings = settings
@@ -54,11 +52,6 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
 
         addSettingsMenus(to: menu)
         menu.addItem(.separator())
-
-        let openItem = NSMenuItem(title: "Open File Converter", action: #selector(openFileConverter), keyEquivalent: "")
-        openItem.target = self
-        openItem.image = NSImage(systemSymbolName: "macwindow", accessibilityDescription: nil)
-        menu.addItem(openItem)
 
         let clearItem = NSMenuItem(title: "Clear Finished Conversions", action: #selector(clearFinishedConversions), keyEquivalent: "")
         clearItem.target = self
@@ -184,23 +177,6 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         for url in urls {
             orchestrator.addJob(inputURL: url, preset: sender.preset)
         }
-    }
-
-    @objc private func openFileConverter() {
-        guard let settings, let orchestrator else { return }
-
-        let hostingController = NSHostingController(
-            rootView: MainView()
-                .environment(settings)
-                .environment(orchestrator)
-        )
-        let window = NSWindow(contentViewController: hostingController)
-        window.title = "File Converter"
-        window.setContentSize(NSSize(width: 800, height: 600))
-        window.isReleasedWhenClosed = false
-        windows.append(window)
-        window.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
     }
 
     @objc private func toggleRevealInFinder() {
