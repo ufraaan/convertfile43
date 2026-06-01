@@ -3,48 +3,233 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>File Converter</title>
+<title>convertfile43 — macOS</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0a0a0a;
-    color: #e5e5e5;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: #fbfbfd;
+    color: #1d1d1f;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    display: flex;
+    height: 100vh;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 52px;
+    align-items: center;
+    gap: 72px;
+  }
+
+  .frame {
+    flex-shrink: 0;
+    width: 44%;
+    max-width: 460px;
+    aspect-ratio: 3 / 4;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 16px 56px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.04);
+    background: #f5f5f7;
+  }
+
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .content {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    max-width: 380px;
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    text-align: center;
+    gap: 24px;
+    padding: 20px 48px;
+    background: rgba(255,255,255,0.90);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    z-index: 10;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
   }
-  .icon { font-size: 4rem; margin-bottom: 1rem; }
-  h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
-  p { color: #9ca3af; max-width: 480px; line-height: 1.6; margin-bottom: 2rem; }
-  a.button {
-    display: inline-block;
-    background: #3b82f6;
-    color: #fff;
-    padding: 0.85rem 2.5rem;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
+
+  .nav-brand {
+    font-size: 12px;
+    font-weight: 400;
+    color: #86868b;
     text-decoration: none;
-    margin-bottom: 2.5rem;
-    transition: background 0.2s;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  a.button:hover { background: #2563eb; }
-  .note { font-size: 0.85rem; color: #6b7280; }
-  a { color: #60a5fa; }
+
+  .nav-brand em {
+    font-style: normal;
+    color: #1d1d1f;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 400;
+    color: #86868b;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover {
+    color: #1d1d1f;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 400;
+    color: #aeaeb2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: #f5f5f7;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    align-self: flex-start;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  h1 {
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: #1d1d1f;
+    margin-bottom: 12px;
+  }
+
+  .tagline {
+    font-size: 14px;
+    font-weight: 400;
+    color: #aeaeb2;
+    line-height: 1.7;
+    letter-spacing: 0;
+    margin-bottom: 28px;
+  }
+
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1d1d1f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 9px 22px;
+    border-radius: 980px;
+    text-decoration: none;
+    align-self: flex-start;
+    transition: opacity 0.15s;
+    opacity: 0.9;
+  }
+
+  .btn-download:hover {
+    opacity: 1;
+  }
+
+  .btn-download svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .footer-text {
+    position: fixed;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    color: #aeaeb2;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-text a {
+    color: #86868b;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-text a:hover {
+    color: #1d1d1f;
+  }
+
+  @media (max-width: 800px) {
+    .page { flex-direction: column; gap: 40px; padding: 80px 32px 48px; }
+    .frame { width: 80%; max-width: 300px; }
+    .content { max-width: 100%; text-align: center; }
+    .hero-badge, .btn-download { align-self: center; }
+    h1 { font-size: 30px; }
+    .nav { gap: 20px; padding: 16px 24px; }
+  }
 </style>
 </head>
 <body>
-<div class="icon">⇄</div>
-<h1>File Converter</h1>
-<p>Convert audio, video, images, and documents directly from the macOS menu bar. Just copy files in Finder, click the icon, and pick a format.</p>
-<a class="button" href="https://github.com/ufraaan/FileConverter/releases/latest">Download</a>
-<div class="note">
-  Requires macOS 14+ &middot; Open source on <a href="https://github.com/ufraaan/FileConverter">GitHub</a>
+
+<nav class="nav">
+  <a href="#" class="nav-brand"><em>convert</em>file43</a>
+  <div class="nav-links">
+    <a href="https://github.com/ufraaan/FileConverter">GitHub</a>
+    <a href="https://github.com/ufraaan/FileConverter/releases/latest">Download</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="frame">
+    <img src="left.jpg" alt="convertfile43">
+  </div>
+
+  <div class="content">
+    <span class="hero-badge">macOS menu bar app</span>
+    <h1>convertfile43.<br>No clicks spared.</h1>
+    <p class="tagline">Copy files in Finder, click the menu bar icon, pick a format. Audio, video, images, documents — done.</p>
+    <a href="https://github.com/ufraaan/FileConverter/releases/latest" class="btn-download">
+      <svg viewBox="0 0 24 24"><path d="M12 4v12M8 14l4 4 4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg>
+      Download
+    </a>
+  </div>
 </div>
+
+<div class="footer-text">
+  Free &amp; open source &middot; macOS 14+
+</div>
+
 </body>
 </html>
