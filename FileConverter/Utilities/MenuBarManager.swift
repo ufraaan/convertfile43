@@ -310,18 +310,31 @@ private extension OutputType.Category {
 
 private extension ConversionJob {
     var menuTitle: String {
+        let truncated = fileName.truncatedWithExtension(maxLength: 48)
         switch state {
         case .queued:
-            return "\(fileName) - Queued"
+            return "\(truncated) - Queued"
         case .running:
-            return "\(fileName) - \(Int(progress))%"
+            return "\(truncated) - \(Int(progress))%"
         case .completed:
-            return "\(fileName) - Done"
+            return "\(truncated) - Done"
         case .failed:
-            return "\(fileName) - Failed"
+            return "\(truncated) - Failed"
         case .cancelled:
-            return "\(fileName) - Cancelled"
+            return "\(truncated) - Cancelled"
         }
+    }
+}
+
+private extension String {
+    func truncatedWithExtension(maxLength: Int) -> String {
+        guard count > maxLength else { return self }
+        let ext = (self as NSString).pathExtension
+        let base = (self as NSString).deletingPathExtension
+        let extDot = ext.isEmpty ? "" : ".\(ext)"
+        let available = maxLength - extDot.count - 3
+        guard available > 0 else { return "..." + extDot }
+        return base.prefix(available) + "..." + extDot
     }
 }
 
