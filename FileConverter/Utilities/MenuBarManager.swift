@@ -13,10 +13,10 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         self.orchestrator = orchestrator
 
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        item.button?.image = NSImage(
-            systemSymbolName: "arrow.left.arrow.right.square",
-            accessibilityDescription: "File Converter"
-        )
+        if let image = NSImage(systemSymbolName: "rectangle.2.swap", accessibilityDescription: "File Converter") {
+            image.isTemplate = true
+            item.button?.image = image
+        }
         item.menu = makeMenu()
         statusItem = item
     }
