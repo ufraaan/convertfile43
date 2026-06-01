@@ -52,6 +52,9 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
             menu.addItem(.separator())
         }
 
+        addSettingsMenus(to: menu)
+        menu.addItem(.separator())
+
         let openItem = NSMenuItem(title: "Open File Converter", action: #selector(openFileConverter), keyEquivalent: "")
         openItem.target = self
         openItem.image = NSImage(systemSymbolName: "macwindow", accessibilityDescription: nil)
@@ -67,6 +70,48 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         let quitItem = NSMenuItem(title: "Quit File Converter", action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
+    }
+
+    private func addSettingsMenus(to menu: NSMenu) {
+        let quickSettingsItem = NSMenuItem(title: "Quick Settings", action: nil, keyEquivalent: "")
+        quickSettingsItem.image = NSImage(systemSymbolName: "slider.horizontal.3", accessibilityDescription: nil)
+
+        let submenu = NSMenu(title: "Quick Settings")
+
+        let revealItem = NSMenuItem(
+            title: "Reveal in Finder on Complete",
+            action: #selector(toggleRevealInFinder),
+            keyEquivalent: ""
+        )
+        revealItem.target = self
+        revealItem.state = settings?.revealInFinderOnComplete == true ? .on : .off
+        submenu.addItem(revealItem)
+
+        let soundItem = NSMenuItem(
+            title: "Play Sound on Complete",
+            action: #selector(togglePlaySound),
+            keyEquivalent: ""
+        )
+        soundItem.target = self
+        soundItem.state = settings?.playSoundOnComplete == true ? .on : .off
+        submenu.addItem(soundItem)
+
+        submenu.addItem(.separator())
+
+        let parallelItem = NSMenuItem(title: "Max Parallel Jobs", action: nil, keyEquivalent: "")
+        let parallelSubmenu = NSMenu(title: "Max Parallel Jobs")
+        for count in 1...8 {
+            let item = ParallelJobsMenuItem(count: count)
+            item.target = self
+            item.action = #selector(setMaxParallelJobs(_:))
+            item.state = settings?.maxParallelJobs == count ? .on : .off
+            parallelSubmenu.addItem(item)
+        }
+        parallelItem.submenu = parallelSubmenu
+        submenu.addItem(parallelItem)
+
+        quickSettingsItem.submenu = submenu
+        menu.addItem(quickSettingsItem)
     }
 
     private func addClipboardStatus(to menu: NSMenu, selection: ClipboardSelection) {
@@ -158,6 +203,24 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    @objc private func toggleRevealInFinder() {
+        guard let settings else { return }
+        settings.revealInFinderOnComplete.toggle()
+        settings.saveGeneralPreferences()
+    }
+
+    @objc private func togglePlaySound() {
+        guard let settings else { return }
+        settings.playSoundOnComplete.toggle()
+        settings.saveGeneralPreferences()
+    }
+
+    @objc private func setMaxParallelJobs(_ sender: NSMenuItem) {
+        guard let sender = sender as? ParallelJobsMenuItem else { return }
+        settings?.maxParallelJobs = sender.count
+        settings?.saveGeneralPreferences()
+    }
+
     @objc private func clearFinishedConversions() {
         orchestrator?.clearCompleted()
     }
@@ -174,6 +237,19 @@ private final class PresetMenuItem: NSMenuItem {
         self.preset = preset
         super.init(title: preset.name, action: nil, keyEquivalent: "")
         toolTip = "Convert copied Finder files to \(preset.outputType.displayName)"
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private final class ParallelJobsMenuItem: NSMenuItem {
+    let count: Int
+
+    init(count: Int) {
+        self.count = count
+        super.init(title: "\(count)", action: nil, keyEquivalent: "")
     }
 
     required init(coder: NSCoder) {

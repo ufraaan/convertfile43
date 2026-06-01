@@ -50,13 +50,6 @@ struct PresetListView: View {
                 settings.presets.move(fromOffsets: from, toOffset: to)
             }
         }
-        .toolbar {
-            ToolbarItem {
-                Button("Add Preset") {
-                    viewModel.addPreset(settings: settings)
-                }
-            }
-        }
         .sheet(isPresented: $viewModel.showingPresetEditor) {
             if let preset = viewModel.editingPreset {
                 PresetEditorView(preset: preset, isEditing: viewModel.isEditing) { updatedPreset in

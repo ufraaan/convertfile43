@@ -41,5 +41,6 @@ final class SettingsViewModel {
 
     func save(settings: AppSettings) {
         PresetStore.save(settings.presets)
+        settings.saveGeneralPreferences()
     }
 }
