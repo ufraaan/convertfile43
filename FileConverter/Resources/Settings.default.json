@@ -1,0 +1,14 @@
+{
+  "presets": [
+    { "name": "MP3 320kbps", "inputExtensions": ["mp3","wav","flac","ogg","m4a","wma","aac"], "outputType": "mp3", "settings": { "bitrate": "320k", "sampleRate": 44100, "channels": 2 } },
+    { "name": "AAC 256kbps", "inputExtensions": ["mp3","wav","flac","ogg","m4a","wma","aac"], "outputType": "aac", "settings": { "bitrate": "256k", "sampleRate": 44100, "channels": 2 } },
+    { "name": "FLAC Lossless", "inputExtensions": ["mp3","wav","flac","ogg","m4a","wma","aac"], "outputType": "flac", "settings": { "sampleRate": 48000, "channels": 2 } },
+    { "name": "MP4 1080p", "inputExtensions": ["mp4","mkv","avi","mov","webm","ogv","wmv","flv"], "outputType": "mp4", "settings": { "scale": "1920:1080", "fps": 30, "encodingSpeed": "medium" } },
+    { "name": "MP4 720p", "inputExtensions": ["mp4","mkv","avi","mov","webm","ogv","wmv","flv"], "outputType": "mp4", "settings": { "scale": "1280:720", "fps": 30, "encodingSpeed": "medium" } },
+    { "name": "JPEG High Quality", "inputExtensions": ["jpg","jpeg","png","webp","avif","bmp","tiff","tif","gif"], "outputType": "jpg", "settings": { "quality": 90 } },
+    { "name": "PNG Lossless", "inputExtensions": ["jpg","jpeg","png","webp","avif","bmp","tiff","tif","gif"], "outputType": "png", "settings": {} },
+    { "name": "WebP", "inputExtensions": ["jpg","jpeg","png","webp","avif","bmp","tiff","tif","gif"], "outputType": "webp", "settings": { "quality": 80 } },
+    { "name": "Animated GIF", "inputExtensions": ["mp4","mkv","avi","mov","webm","gif"], "outputType": "gif", "settings": { "scale": "800:-1", "fps": 15 } },
+    { "name": "PDF (Images)", "inputExtensions": ["jpg","jpeg","png","webp","bmp","tiff"], "outputType": "pdf", "settings": { "quality": 90 } }
+  ]
+}

@@ -1,0 +1,14 @@
+# Xcode
+*.xcworkspace
+*.xcuserdata
+DerivedData/
+.build/
+
+# macOS
+.DS_Store
+
+# Middleware binaries (downloaded separately)
+Middleware/binaries/*
+
+# Generated
+*.generated.swift

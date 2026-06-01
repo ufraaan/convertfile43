@@ -1,0 +1,48 @@
+name: FileConverter
+options:
+  bundleIdPrefix: com.fileconverter
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SDKROOT: macosx
+    CODE_SIGN_STYLE: Manual
+
+targets:
+  FileConverter:
+    type: application
+    platform: macOS
+    sources:
+      - path: FileConverter
+        excludes:
+          - "**/*.plist"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app
+        INFOPLIST_FILE: FileConverter/Info.plist
+        CODE_SIGN_ENTITLEMENTS: FileConverter/Entitlements.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - target: FileConverterFinderSync
+        embed: true
+        codeSignOnCopy: true
+
+  FileConverterFinderSync:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: FinderSyncExtension
+        excludes:
+          - "**/*.plist"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app.FinderSyncExtension
+        INFOPLIST_FILE: FinderSyncExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: FinderSyncExtension/Entitlements.plist
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../../../Frameworks"
+    dependencies: []
