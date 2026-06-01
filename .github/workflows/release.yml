@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          cd "$GITHUB_WORKSPACE"
+          xcodegen generate
+
+      - name: Build
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          xcodebuild -project FileConverter.xcodeproj \
+            -scheme FileConverter \
+            -configuration Release \
+            -derivedDataPath Build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            clean build
+
+      - name: Import signing certificate
+        if: vars.APPLE_DEVELOPER_ID != ''
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          CERT_PASSWORD: ${{ secrets.BUILD_CERTIFICATE_P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > cert.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security import cert.p12 -k build.keychain -P "$CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+
+      - name: Sign app
+        if: vars.APPLE_DEVELOPER_ID != ''
+        run: |
+          codesign --force --deep --sign "${{ vars.APPLE_DEVELOPER_ID }}" \
+            "Build/Build/Products/Release/FileConverter.app"
+
+      - name: Create DMG
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          APP="Build/Build/Products/Release/FileConverter.app"
+          DMG="FileConverter-$VERSION.dmg"
+          hdiutil create -volname "FileConverter $VERSION" \
+            -srcfolder "$APP" \
+            -ov -format UDZO \
+            "$DMG"
+          echo "DMG_PATH=$DMG" >> "$GITHUB_ENV"
+
+      - name: Notarize DMG
+        if: vars.APPLE_DEVELOPER_ID != ''
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          xcrun notarytool submit "${{ env.DMG_PATH }}" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM" \
+            --password "$APPLE_PASSWORD" \
+            --wait
+          xcrun stapler staple "${{ env.DMG_PATH }}"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.DMG_PATH }}
+          generate_release_notes: true
