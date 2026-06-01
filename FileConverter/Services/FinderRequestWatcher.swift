@@ -1,11 +1,5 @@
 import Foundation
 
-struct FinderConversionRequest: Codable, Sendable {
-    let files: [URL]
-    let presetName: String
-    let timestamp: Date
-}
-
 final class FinderRequestWatcher {
     private var source: DispatchSourceFileSystemObject?
     private let handler: (FinderConversionRequest) -> Void

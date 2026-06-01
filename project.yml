@@ -20,6 +20,7 @@ targets:
       - path: FileConverter
         excludes:
           - "**/*.plist"
+      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app
@@ -40,6 +41,7 @@ targets:
       - path: FinderSyncExtension
         excludes:
           - "**/*.plist"
+      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app.FinderSyncExtension

@@ -133,8 +133,6 @@ extension FinderSyncExtension {
     }
 
     private func appGroupDirectory() -> URL {
-        let appID = Bundle.main.bundleIdentifier?
-            .replacingOccurrences(of: ".FinderSyncExtension", with: ".app") ?? "com.fileconverter.app"
         let teamPrefix = "com.fileconverter"
         let groupID = "\(teamPrefix).app"
 
