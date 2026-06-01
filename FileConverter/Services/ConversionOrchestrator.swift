@@ -6,7 +6,6 @@ final class ConversionOrchestrator {
     var isProcessing = false
 
     private let settings: AppSettings
-    private let decoder = JSONDecoder()
 
     init(settings: AppSettings) {
         self.settings = settings

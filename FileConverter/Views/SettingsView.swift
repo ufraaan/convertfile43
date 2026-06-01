@@ -26,14 +26,15 @@ struct GeneralSettingsView: View {
     @Environment(AppSettings.self) private var settings
 
     var body: some View {
-        Form {
+        @Bindable var bindableSettings = settings
+        return Form {
             Section("Conversion") {
-                Stepper("Max parallel jobs: \(settings.maxParallelJobs)", value: $settings.maxParallelJobs, in: 1...8)
+                Stepper("Max parallel jobs: \(bindableSettings.maxParallelJobs)", value: $bindableSettings.maxParallelJobs, in: 1...8)
             }
 
             Section("Completion") {
-                Toggle("Reveal in Finder on complete", isOn: $settings.revealInFinderOnComplete)
-                Toggle("Play sound on complete", isOn: $settings.playSoundOnComplete)
+                Toggle("Reveal in Finder on complete", isOn: $bindableSettings.revealInFinderOnComplete)
+                Toggle("Play sound on complete", isOn: $bindableSettings.playSoundOnComplete)
             }
         }
         .formStyle(.grouped)
@@ -45,7 +46,7 @@ struct AboutView: View {
         VStack(spacing: 16) {
             Image(systemName: "arrow.left.arrow.right.square")
                 .font(.system(size: 64))
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(.tint)
 
             Text("File Converter")
                 .font(.title)
