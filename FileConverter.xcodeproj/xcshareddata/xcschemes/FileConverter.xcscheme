@@ -21,20 +21,6 @@
                ReferencedContainer = "container:FileConverter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2679A122075577F63E6B6A65"
-               BuildableName = "FileConverterFinderSync.appex"
-               BlueprintName = "FileConverterFinderSync"
-               ReferencedContainer = "container:FileConverter.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

@@ -20,7 +20,6 @@ targets:
       - path: FileConverter
         excludes:
           - "**/*.plist"
-      - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app
@@ -29,25 +28,14 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
-    dependencies:
-      - target: FileConverterFinderSync
-        embed: true
-        codeSignOnCopy: true
-
-  FileConverterFinderSync:
-    type: app-extension
-    platform: macOS
-    sources:
-      - path: FinderSyncExtension
-        excludes:
-          - "**/*.plist"
-      - path: Shared
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app.FinderSyncExtension
-        INFOPLIST_FILE: FinderSyncExtension/Info.plist
-        CODE_SIGN_ENTITLEMENTS: FinderSyncExtension/Entitlements.plist
-        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../../../Frameworks"
+    preBuildScripts:
+      - name: "Bundle Binary Dependencies"
+        basedOnDependencyAnalysis: false
+        script: |
+          RESOURCES_DIR="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
+          cp -f "$SRCROOT/Middleware/binaries/ffmpeg" "$RESOURCES_DIR/"
+          cp -f "$SRCROOT/Middleware/binaries/magick" "$RESOURCES_DIR/"
+          cp -f "$SRCROOT/Middleware/binaries/gs" "$RESOURCES_DIR/"
     dependencies: []
 
 schemes:
@@ -55,7 +43,6 @@ schemes:
     build:
       targets:
         FileConverter: all
-        FileConverterFinderSync: all
     run:
       config: Debug
       targets:
