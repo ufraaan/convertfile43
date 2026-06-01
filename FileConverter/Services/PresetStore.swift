@@ -1,7 +1,7 @@
 import Foundation
 
 enum PresetStore {
-    private static var userDefaultsKey = "customPresets"
+    private static nonisolated(unsafe) let userDefaultsKey = "customPresets"
 
     static func load() -> [ConversionPreset] {
         guard let data = UserDefaults.standard.data(forKey: userDefaultsKey),

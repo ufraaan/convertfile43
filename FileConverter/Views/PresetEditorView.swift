@@ -1,17 +1,30 @@
 import SwiftUI
 
 struct PresetEditorView: View {
-    @Bindable var preset: ConversionPreset
+    @State private var editablePreset: ConversionPreset
     let isEditing: Bool
+    let onSave: (ConversionPreset) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
-    var body: some Form {
+    init(preset: ConversionPreset, isEditing: Bool, onSave: @escaping (ConversionPreset) -> Void) {
+        _editablePreset = State(initialValue: preset)
+        self.isEditing = isEditing
+        self.onSave = onSave
+    }
+
+    var body: some View {
         Form {
             Section("General") {
-                TextField("Preset Name", text: $preset.name)
+                TextField("Preset Name", text: Binding(
+                    get: { editablePreset.name },
+                    set: { editablePreset.name = $0 }
+                ))
 
-                Picker("Output Format", selection: $preset.outputType) {
+                Picker("Output Format", selection: Binding(
+                    get: { editablePreset.outputType },
+                    set: { editablePreset.outputType = $0 }
+                )) {
                     ForEach(OutputType.allCases, id: \.self) { type in
                         Text(type.displayName).tag(type)
                     }
@@ -20,33 +33,33 @@ struct PresetEditorView: View {
 
             Section("Input Types") {
                 TextField("File extensions (comma separated)", text: Binding(
-                    get: { preset.inputExtensions.joined(separator: ", ") },
-                    set: { preset.inputExtensions = $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() } }
+                    get: { editablePreset.inputExtensions.joined(separator: ", ") },
+                    set: { editablePreset.inputExtensions = $0.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() } }
                 ))
             }
 
             Section("Settings") {
-                if preset.outputType.supportsQuality {
+                if editablePreset.outputType.supportsQuality {
                     VStack(alignment: .leading) {
-                        Text("Quality: \(Int(preset.settings.quality ?? 80))")
+                        Text("Quality: \(Int(editablePreset.settings.quality ?? 80))")
                         Slider(value: Binding(
-                            get: { preset.settings.quality ?? 80 },
-                            set: { preset.settings.quality = $0 }
+                            get: { editablePreset.settings.quality ?? 80 },
+                            set: { editablePreset.settings.quality = $0 }
                         ), in: 1...100)
                     }
                 }
 
-                if preset.outputType.supportsBitrate {
+                if editablePreset.outputType.supportsBitrate {
                     TextField("Bitrate (e.g. 320k)", text: Binding(
-                        get: { preset.settings.bitrate ?? "" },
-                        set: { preset.settings.bitrate = $0.isEmpty ? nil : $0 }
+                        get: { editablePreset.settings.bitrate ?? "" },
+                        set: { editablePreset.settings.bitrate = $0.isEmpty ? nil : $0 }
                     ))
                 }
 
-                if preset.outputType.supportsScale {
+                if editablePreset.outputType.supportsScale {
                     TextField("Scale (e.g. 1920:1080)", text: Binding(
-                        get: { preset.settings.scale ?? "" },
-                        set: { preset.settings.scale = $0.isEmpty ? nil : $0 }
+                        get: { editablePreset.settings.scale ?? "" },
+                        set: { editablePreset.settings.scale = $0.isEmpty ? nil : $0 }
                     ))
                 }
             }
@@ -55,6 +68,7 @@ struct PresetEditorView: View {
                 HStack {
                     Spacer()
                     Button(isEditing ? "Save" : "Create") {
+                        onSave(editablePreset)
                         dismiss()
                     }
                     Button("Cancel") {

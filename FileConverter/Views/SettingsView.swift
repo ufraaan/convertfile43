@@ -25,7 +25,7 @@ struct SettingsView: View {
 struct GeneralSettingsView: View {
     @Environment(AppSettings.self) private var settings
 
-    var body: some Form {
+    var body: some View {
         Form {
             Section("Conversion") {
                 Stepper("Max parallel jobs: \(settings.maxParallelJobs)", value: $settings.maxParallelJobs, in: 1...8)

@@ -1,7 +1,7 @@
 import Foundation
 
 @Observable
-final class AppSettings: Sendable {
+final class AppSettings {
     var presets: [ConversionPreset]
     var maxParallelJobs: Int
     var revealInFinderOnComplete: Bool

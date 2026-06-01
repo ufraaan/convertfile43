@@ -59,7 +59,9 @@ struct PresetListView: View {
         }
         .sheet(isPresented: $viewModel.showingPresetEditor) {
             if let preset = viewModel.editingPreset {
-                PresetEditorView(preset: preset, isEditing: viewModel.isEditing)
+                PresetEditorView(preset: preset, isEditing: viewModel.isEditing) { updatedPreset in
+                    viewModel.savePreset(updatedPreset, settings: settings)
+                }
             }
         }
     }

@@ -13,7 +13,6 @@ final class SettingsViewModel {
             outputType: .mp4,
             settings: .default
         )
-        settings.presets.append(newPreset)
         editingPreset = newPreset
         isEditing = false
         showingPresetEditor = true
@@ -25,9 +24,19 @@ final class SettingsViewModel {
         showingPresetEditor = true
     }
 
+    func savePreset(_ preset: ConversionPreset, settings: AppSettings) {
+        if let index = settings.presets.firstIndex(where: { $0.id == preset.id }) {
+            settings.presets[index] = preset
+        } else {
+            settings.presets.append(preset)
+        }
+        PresetStore.save(settings.presets)
+    }
+
     func deletePreset(_ preset: ConversionPreset, settings: AppSettings) {
         guard !preset.isBuiltIn else { return }
         settings.presets.removeAll { $0.id == preset.id }
+        PresetStore.save(settings.presets)
     }
 
     func save(settings: AppSettings) {
