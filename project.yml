@@ -2,13 +2,13 @@ name: FileConverter
 options:
   bundleIdPrefix: com.fileconverter
   deploymentTarget:
-    macOS: "13.0"
+    macOS: "14.0"
   xcodeVersion: "16.0"
 
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
     SDKROOT: macosx
     CODE_SIGN_STYLE: Manual
 
@@ -27,6 +27,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: FileConverter/Entitlements.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
     dependencies:
       - target: FileConverterFinderSync
         embed: true
@@ -46,3 +47,26 @@ targets:
         CODE_SIGN_ENTITLEMENTS: FinderSyncExtension/Entitlements.plist
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../../../../Frameworks"
     dependencies: []
+
+schemes:
+  FileConverter:
+    build:
+      targets:
+        FileConverter: all
+        FileConverterFinderSync: all
+    run:
+      config: Debug
+      targets:
+        FileConverter: all
+    profile:
+      config: Release
+      targets:
+        FileConverter: all
+    analyze:
+      config: Debug
+      targets:
+        FileConverter: all
+    archive:
+      config: Release
+      targets:
+        FileConverter: all

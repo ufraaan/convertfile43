@@ -6,7 +6,7 @@ Inspired by [FileConverter](https://github.com/Tichau/FileConverter) for Windows
 
 ## Requirements
 
-- **macOS 13+ (Ventura)**
+- **macOS 14+ (Sonoma)**
 - **Xcode 16+** (download from [Mac App Store](https://apps.apple.com/app/xcode/id497799835) or [Apple Developer](https://developer.apple.com/xcode/))
 - **XcodeGen** – `brew install xcodegen`
 

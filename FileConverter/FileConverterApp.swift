@@ -3,18 +3,16 @@ import SwiftUI
 @main
 struct FileConverterApp: App {
     @State private var settings = AppSettings()
-    @State private var conversionOrchestrator: ConversionOrchestrator?
-    @State private var requestWatcher: FinderRequestWatcher?
+    @State private var conversionOrchestrator = ConversionOrchestrator(settings: AppSettings())
 
     var body: some Scene {
         WindowGroup {
             MainView()
                 .environment(settings)
-                .environment(conversionOrchestrator ?? ConversionOrchestrator(settings: settings))
+                .environment(conversionOrchestrator)
                 .onAppear {
-                    let orchestrator = ConversionOrchestrator(settings: settings)
-                    conversionOrchestrator = orchestrator
-                    requestWatcher = FinderRequestWatcher { request in
+                    conversionOrchestrator = ConversionOrchestrator(settings: settings)
+                    _ = FinderRequestWatcher { [orchestrator = conversionOrchestrator] request in
                         orchestrator.enqueue(request: request)
                     }
                 }
@@ -25,7 +23,7 @@ struct FileConverterApp: App {
         WindowGroup("Settings", id: "settings") {
             SettingsView()
                 .environment(settings)
-                .environment(conversionOrchestrator ?? ConversionOrchestrator(settings: settings))
+                .environment(conversionOrchestrator)
         }
 
         WindowGroup("Help", id: "help") {

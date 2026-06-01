@@ -20,10 +20,10 @@
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-    <key>NSMainStoryboardFile</key>
-    <string></string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
+    <key>NSApplicationSupportsSecureRestorableState</key>
+    <true/>
     <key>NSSupportsAutomaticTermination</key>
     <true/>
     <key>NSSupportsSuddenTermination</key>
