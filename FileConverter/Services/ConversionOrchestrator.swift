@@ -37,19 +37,11 @@ final class ConversionOrchestrator {
     }
 
     @MainActor
-    func enqueue(request: FinderConversionRequest) {
-        let preset = settings.presets.first { $0.name == request.presetName }
-            ?? ConversionPreset(name: request.presetName, inputExtensions: [], outputType: .mp4)
-
-        for fileURL in request.files {
-            addJob(inputURL: fileURL, preset: preset)
-        }
-    }
-
-    @MainActor
     func removeJob(id: UUID) {
         jobs.removeAll { $0.id == id }
     }
+
+    private nonisolated let cleanupDelay: Duration = .seconds(4)
 
     @MainActor
     func cancelJob(id: UUID) {
@@ -89,6 +81,10 @@ final class ConversionOrchestrator {
                     if self.settings.revealInFinderOnComplete {
                         NSWorkspace.shared.activateFileViewerSelecting([self.jobs[idx].outputURL])
                     }
+                    Task {
+                        try? await Task.sleep(for: self.cleanupDelay)
+                        self.removeJob(id: job.id)
+                    }
                     Task { self.processNext() }
                 }
             } catch {
@@ -98,6 +94,10 @@ final class ConversionOrchestrator {
                     self.jobs[idx].errorMessage = error.localizedDescription
                     self.isProcessing = false
                     NotificationService.sendErrorNotification(job: self.jobs[idx])
+                    Task {
+                        try? await Task.sleep(for: self.cleanupDelay)
+                        self.removeJob(id: job.id)
+                    }
                     Task { self.processNext() }
                 }
             }

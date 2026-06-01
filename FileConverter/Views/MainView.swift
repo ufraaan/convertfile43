@@ -39,7 +39,9 @@ struct MainView: View {
                 allowsMultipleSelection: true
             ) { result in
                 if case .success(let urls) = result {
-                    viewModel.handleSelectedURLs(urls, orchestrator: orchestrator, settings: settings)
+                    Task { @MainActor in
+                        viewModel.handleSelectedURLs(urls, orchestrator: orchestrator, settings: settings)
+                    }
                 }
             }
         }
@@ -69,8 +71,10 @@ struct MainView: View {
                         ConversionJobRow(job: job)
                     }
                     .onDelete { indexSet in
-                        for index in indexSet {
-                            orchestrator.removeJob(id: orchestrator.jobs[index].id)
+                        Task { @MainActor in
+                            for index in indexSet {
+                                orchestrator.removeJob(id: orchestrator.jobs[index].id)
+                            }
                         }
                     }
                 }
