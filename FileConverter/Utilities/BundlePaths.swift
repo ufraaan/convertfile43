@@ -5,14 +5,6 @@ enum BundlePaths {
         findBinary("ffmpeg")
     }
 
-    static var imagemagick: String {
-        findBinary("magick")
-    }
-
-    static var ghostscript: String {
-        findBinary("gs")
-    }
-
     private static func findBinary(_ name: String) -> String {
         if let bundled = Bundle.main.path(forResource: name, ofType: nil) {
             LoggerService.info("Found bundled binary '\(name)' at: \(bundled)", component: "BundlePaths")

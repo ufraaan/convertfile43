@@ -36,7 +36,6 @@ targets:
         script: |
           RESOURCES_DIR="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
           cp -f "$SRCROOT/Middleware/binaries/ffmpeg" "$RESOURCES_DIR/"
-          cp -f "$SRCROOT/Middleware/binaries/gs" "$RESOURCES_DIR/"
     dependencies: []
 
   FileConverterTests:

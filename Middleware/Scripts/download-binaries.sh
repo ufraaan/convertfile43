@@ -1,7 +1,7 @@
 #!/bin/bash
-# Downloads static binaries for ffmpeg, ImageMagick, Ghostscript
-# Copied into the .app bundle at build time.
-# Requires: curl, lipo (for universal binary), brew (fallback for magick/gs)
+# Downloads the static ffmpeg binary used by convertfile43.
+# Copied into the .app bundle at build time by project.yml's preBuildScript.
+# Requires: curl
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -23,48 +23,6 @@ if [ ! -f "$FFMPEG_DEST" ]; then
   fi
   chmod +x "$FFMPEG_DEST"
   echo "  ffmpeg version: $($FFMPEG_DEST -version 2>&1 | head -1)"
-else
-  echo "  Already exists, skipping."
-fi
-
-echo "=== ImageMagick (magick) ==="
-MAGICK_DEST="$BINARIES_DIR/magick"
-if [ ! -f "$MAGICK_DEST" ]; then
-  if command -v magick &>/dev/null; then
-    MAGICK_BREW=$(command -v magick)
-    echo "Copying from brew: $MAGICK_BREW"
-    cp "$MAGICK_BREW" "$MAGICK_DEST"
-    echo "  magick version: $($MAGICK_DEST -version 2>&1 | head -1)"
-  else
-    echo "  NOT FOUND. Install with: brew install imagemagick"
-    echo "  Or download a static build from https://imagemagick.org/download/"
-  fi
-else
-  echo "  Already exists, skipping."
-fi
-
-echo "=== Ghostscript (gs) ==="
-GS_DEST="$BINARIES_DIR/gs"
-if [ ! -f "$GS_DEST" ]; then
-  if command -v gs &>/dev/null; then
-    GS_BREW=$(command -v gs)
-    echo "Copying from brew: $GS_BREW"
-    # cp follows symlinks on macOS — copies the real binary
-    cp "$GS_BREW" "$GS_DEST" || {
-      # Fallback: resolve symlink manually (macOS readlink doesn't support -f)
-      resolved="$GS_BREW"
-      while [ -L "$resolved" ]; do
-        target=$(readlink "$resolved")
-        [[ "$target" = /* ]] && resolved="$target" || resolved="$(dirname "$resolved")/$target"
-      done
-      cp "$resolved" "$GS_DEST"
-    }
-    chmod +x "$GS_DEST"
-    echo "  gs version: $($GS_DEST --version 2>&1)"
-  else
-    echo "  NOT FOUND. Install with: brew install ghostscript"
-    echo "  Or download from https://ghostscript.com/releases/"
-  fi
 else
   echo "  Already exists, skipping."
 fi

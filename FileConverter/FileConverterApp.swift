@@ -34,34 +34,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func validateBundledBinaries() {
-        let binaries = ["ffmpeg", "magick", "gs"]
-        for name in binaries {
-            if let path = Bundle.main.path(forResource: name, ofType: nil) {
-                LoggerService.info("Bundled binary found: \(name) at \(path)", component: "AppDelegate")
-            } else {
-                LoggerService.warning("Bundled binary missing: \(name) — conversions using it will fail",
-                    component: "AppDelegate")
-            }
-        }
-    }
-}
-
-        validateBundledBinaries()
-
-        let manager = MenuBarManager()
-        manager.setup(settings: settings, orchestrator: conversionOrchestrator)
-        self.menuBarManager = manager
-    }
-
-    private func validateBundledBinaries() {
-        let binaries = ["ffmpeg", "magick", "gs"]
-        for name in binaries {
-            if let path = Bundle.main.path(forResource: name, ofType: nil) {
-                LoggerService.info("Bundled binary found: \(name) at \(path)", component: "AppDelegate")
-            } else {
-                LoggerService.warning("Bundled binary missing: \(name) — conversions using it will fail",
-                    component: "AppDelegate")
-            }
+        if let path = Bundle.main.path(forResource: "ffmpeg", ofType: nil) {
+            LoggerService.info("Bundled binary found: ffmpeg at \(path)", component: "AppDelegate")
+        } else {
+            LoggerService.warning("Bundled binary missing: ffmpeg - conversions will fail",
+                component: "AppDelegate")
         }
     }
 }
