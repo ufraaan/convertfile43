@@ -7,7 +7,7 @@
   <p>
     <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&style=flat" alt="macOS 14+">
     <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&style=flat" alt="Swift 6.0">
-    <img src="https://img.shields.io/badge/Version-0.1.0-1d1d1f?style=flat" alt="Version 0.1.0">
+    <img src="https://img.shields.io/badge/Version-0.0.1-1d1d1f?style=flat" alt="Version 0.0.1">
     <img src="https://img.shields.io/badge/License-GPL_v3-1d1d1f?style=flat" alt="GPL v3">
   </p>
 </div>

@@ -42,33 +42,34 @@ jobs:
             CODE_SIGN_ENTITLEMENTS="" \
             CODE_SIGNING_ALLOWED=NO
 
-      - name: Locate built app
+      - name: Extract version from tag
         run: |
-          echo "app=Build/Build/Products/Release/convertfile43.app" >> $GITHUB_OUTPUT
-
-      - name: Check signing identity
-        id: check_signing
-        run: |
-          if security find-identity -v -p basic -p macappstore 2>/dev/null | grep -q "Developer ID Application"; then
-            echo "has_identity=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_identity=false" >> $GITHUB_OUTPUT
-          fi
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Sign the app
-        if: steps.check_signing.outputs.has_identity == 'true'
+        id: sign
         run: |
           APP="Build/Build/Products/Release/convertfile43.app"
-          DMG="convertfile43-$VERSION.dmg"
-          codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.DEVELOPER_NAME }}" "$APP"
-          hdiutil create -volname "convertfile43 $VERSION" \
+          if security find-identity -v -p basic -p macappstore 2>/dev/null | grep -q "Developer ID Application"; then
+            codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.DEVELOPER_NAME }}" "$APP"
+            echo "signed=true" >> $GITHUB_OUTPUT
+          else
+            echo "signed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create DMG
+        run: |
+          APP="Build/Build/Products/Release/convertfile43.app"
+          DMG="convertfile43-${{ env.VERSION }}.dmg"
+          hdiutil create -volname "convertfile43 ${{ env.VERSION }}" \
             -srcfolder "$APP" \
             -ov -format UDZO \
             "$DMG"
-          echo "DMG_PATH=$DMG" >> "$GITHUB_ENV"
+          echo "DMG_PATH=$DMG" >> $GITHUB_ENV
 
       - name: Notarize DMG
-        if: vars.APPLE_DEVELOPER_ID != ''
+        if: steps.sign.outputs.signed == 'true'
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM: ${{ secrets.APPLE_TEAM_ID }}
