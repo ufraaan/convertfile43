@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/readme-hero.gif" alt="convertfile43" width="400" style="border-radius: 12px;">
+  <img src="docs/readme-hero.gif" alt="convertfile43" width="600" style="border-radius: 12px;">
   <br><br>
   <h1>convertfile43</h1>
   <p>Convert audio, video, images, and documents from your menu bar.</p>
