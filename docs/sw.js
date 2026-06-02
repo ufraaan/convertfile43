@@ -1,5 +1,5 @@
 const CACHE = 'v1';
-const IMAGE = 'left.jpg';
+const IMAGE = 'left.webp';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
