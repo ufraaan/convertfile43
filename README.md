@@ -1,9 +1,7 @@
 <div align="center">
-  <img src="docs/readme-hero.gif" alt="convertfile43" width="600" style="border-radius: 12px;">
-  <br><br>
+  <img src="docs/readme-hero.gif" alt="convertfile43" width="480" style="border-radius: 12px;">
   <h1>convertfile43</h1>
-  <p>Convert audio, video, images, and documents from your menu bar.</p>
-  <br>
+  <p >Convert audio, video, images, and documents from your menu bar.</p>
   <p>
     <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&style=flat" alt="macOS 14+">
     <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&style=flat" alt="Swift 6.0">
@@ -12,38 +10,31 @@
   </p>
 </div>
 
-<br>
+## how it works
 
-## How it works
+copy some files in finder (⌘C), click the menu bar icon, pick a format under audio, video, image, or document. that's it - converted files show up right next to the originals.
 
-1. **Copy** files in Finder (Cmd+C)
-2. **Click** the menu bar icon
-3. **Pick** a format under Audio, Video, Image, or Document
-4. **Done** - converted files appear next to the originals
+no windows, no drag-and-drop, nothing to configure. just the menu bar.
 
-No windows, no drag-and-drop, no settings to configure. Just the menu bar.
+## features
 
-## Features
+menu bar only, no dock icon. stays out of your way.
+batch conversion - copy dozens of files, convert all at once.
+comes with ffmpeg, ImageMagick, and Ghostscript bundled in.
+with LibreOffice, handles Word, Excel, and PowerPoint too.
+macOS notification when a conversion finishes.
 
-- **Menu bar only** - no Dock icon, stays out of your way
-- **Batch conversion** - copy dozens of files, convert all at once
-- **Bundled tools** - [ffmpeg](https://ffmpeg.org), [ImageMagick](https://imagemagick.org), and [Ghostscript](https://ghostscript.com) included
-- **LibreOffice support** - convert Word, Excel, and PowerPoint to PDF (requires [LibreOffice](https://www.libreoffice.org))
-- **Notifications** - macOS notification on completion
+## requirements
 
-## Requirements
+macOS 14 (sonoma) or newer.
 
-- macOS 14 (Sonoma) or later
+## installation
 
-## Installation
+download the latest .dmg from the [releases page](https://github.com/ufraaan/convertfile43/releases/latest), open it, and drag convertfile43 to your Applications folder. launch it and look for the icon in your menu bar.
 
-1. Download the latest `.dmg` from the [releases page](https://github.com/ufraaan/convertfile43/releases/latest)
-2. Open the DMG and drag **convertfile43** to your Applications folder
-3. Launch the app - look for the icon in your menu bar
+the app is unsigned so macOS might show a warning the first time. just right-click it and select Open.
 
-> **Note:** The app is unsigned. On first launch, macOS may show a warning. Right-click the app and select **Open** to bypass it.
-
-## Supported formats
+## supported formats
 
 | Category | Output formats | Engine |
 |---|---|---|
@@ -53,9 +44,9 @@ No windows, no drag-and-drop, no settings to configure. Just the menu bar.
 | Document | PDF | ImageMagick, Ghostscript, LibreOffice |
 | Office* | PDF | LibreOffice |
 
-\* Office documents (doc, docx, xls, xlsx, ppt, pptx, odt, odp, ods) require [LibreOffice](https://www.libreoffice.org) installed.
+office documents (doc, docx, xls, xlsx, ppt, pptx, odt, odp, ods) need LibreOffice installed.
 
-## Building from source
+## building from source
 
 ```bash
 brew install xcodegen
@@ -64,6 +55,10 @@ xcodegen generate
 xcodebuild -project convertfile43.xcodeproj -scheme convertfile43 -configuration Release -derivedDataPath ./Build
 ```
 
-## License
+## acknowledgments
+
+this app wouldn't work without the incredible open source tools it wraps around. [ffmpeg](https://ffmpeg.org) handles all audio and video conversion. [ImageMagick](https://imagemagick.org) does the image processing. [Ghostscript](https://ghostscript.com) helps with PDFs. and [LibreOffice](https://www.libreoffice.org) powers the office document conversion. huge thanks to the maintainers and contributors of these projects.
+
+## license
 
 GPL v3 - see [LICENSE](LICENSE)
