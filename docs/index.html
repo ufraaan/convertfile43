@@ -192,6 +192,23 @@
     letter-spacing: 0.02em;
   }
 
+  .version-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 10px;
+    font-weight: 400;
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    color: #aeaeb2;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .version-tag.loaded {
+    opacity: 1;
+  }
+
   .footer-text a {
     color: #86868b;
     text-decoration: none;
@@ -237,6 +254,7 @@
       <svg viewBox="0 0 24 24"><path d="M12 4v12M8 14l4 4 4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg>
       Download
     </a>
+    <span class="version-tag" id="versionTag"></span>
   </div>
 </div>
 
@@ -248,6 +266,19 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
+
+  (function () {
+    const el = document.getElementById('versionTag');
+    if (!el) return;
+    fetch('version.json', { cache: 'no-store' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data || !data.version) return;
+        el.textContent = data.version;
+        el.classList.add('loaded');
+      })
+      .catch(() => {});
+  })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>

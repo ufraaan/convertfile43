@@ -1,4 +1,4 @@
-const CACHE = 'v1';
+const CACHE = 'v2';
 const IMAGE = 'left.webp';
 
 self.addEventListener('install', (e) => {
