@@ -192,15 +192,20 @@
     letter-spacing: 0.02em;
   }
 
+  .btn-row {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+  }
+
   .version-tag {
     display: inline-block;
-    margin-top: 14px;
-    font-size: 10px;
-    font-weight: 400;
+    margin-left: 12px;
+    font-size: 11px;
+    font-weight: 500;
     font-family: 'SF Mono', ui-monospace, Menlo, monospace;
-    color: #aeaeb2;
+    color: #6e6e73;
     letter-spacing: 0.04em;
-    align-self: flex-start;
     opacity: 0;
     transition: opacity 0.4s;
   }
@@ -250,11 +255,13 @@
     <span class="hero-badge">macOS menu bar app</span>
     <h1>convertfile43.<br>No clicks spared.</h1>
     <p class="tagline">Copy files in Finder, click the menu bar icon, pick a format. Audio, video, images, documents — done.</p>
-    <a href="https://github.com/ufraaan/convertfile43/releases/latest" class="btn-download">
-      <svg viewBox="0 0 24 24"><path d="M12 4v12M8 14l4 4 4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg>
-      Download
-    </a>
-    <span class="version-tag" id="versionTag"></span>
+    <div class="btn-row">
+      <a href="https://github.com/ufraaan/convertfile43/releases/latest" class="btn-download">
+        <svg viewBox="0 0 24 24"><path d="M12 4v12M8 14l4 4 4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg>
+        Download
+      </a>
+      <span class="version-tag" id="versionTag">…</span>
+    </div>
   </div>
 </div>
 
