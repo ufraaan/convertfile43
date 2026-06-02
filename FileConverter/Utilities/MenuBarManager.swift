@@ -17,6 +17,31 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         }
         item.menu = makeMenu()
         statusItem = item
+
+        startObservingProgress()
+    }
+
+    private func startObservingProgress() {
+        guard let orchestrator else { return }
+
+        withObservationTracking {
+            _ = orchestrator.jobs
+        } onChange: { [weak self] in
+            Task { @MainActor in
+                self?.updateStatusItemTitle()
+                self?.startObservingProgress()
+            }
+        }
+    }
+
+    private func updateStatusItemTitle() {
+        guard let orchestrator, let button = statusItem?.button else { return }
+        if let running = orchestrator.jobs.first(where: { $0.state == .running }) {
+            let pct = Int(running.progress.rounded())
+            button.title = "\(pct)%"
+        } else {
+            button.title = ""
+        }
     }
 
     func menuWillOpen(_ menu: NSMenu) {
