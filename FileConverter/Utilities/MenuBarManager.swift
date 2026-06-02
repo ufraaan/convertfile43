@@ -45,6 +45,7 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
     }
 
     func menuWillOpen(_ menu: NSMenu) {
+        LoggerService.debug("Menu opening", component: "MenuBarManager")
         populate(menu)
     }
 
@@ -82,6 +83,8 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         clearItem.target = self
         clearItem.isEnabled = hasFinishedJobs
         menu.addItem(clearItem)
+
+        addLogsMenu(to: menu)
 
         menu.addItem(.separator())
 
@@ -191,14 +194,21 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
     }
 
     @objc private func convertFromClipboard(_ sender: NSMenuItem) {
-        guard let sender = sender as? PresetMenuItem else { return }
+        guard let sender = sender as? PresetMenuItem else {
+            LoggerService.error("convertFromClipboard called with non-PresetMenuItem", component: "MenuBarManager")
+            return
+        }
         let urls = ClipboardReader.readFileURLs()
         let selection = ClipboardSelection(urls: urls)
         guard selection.canConvertAllFiles(with: sender.preset), let orchestrator else {
+            LoggerService.warning("Cannot convert: preset '\(sender.preset.name)' not compatible with clipboard files",
+                component: "MenuBarManager")
             NSSound.beep()
             return
         }
 
+        LoggerService.info("Converting \(urls.count) file(s) with preset '\(sender.preset.name)'",
+            component: "MenuBarManager")
         for url in urls {
             orchestrator.addJob(inputURL: url, preset: sender.preset)
         }
@@ -220,6 +230,34 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         guard let sender = sender as? ParallelJobsMenuItem else { return }
         settings?.maxParallelJobs = sender.count
         settings?.saveGeneralPreferences()
+    }
+
+    private func addLogsMenu(to menu: NSMenu) {
+        let logsItem = NSMenuItem(title: "Show Logs", action: nil, keyEquivalent: "")
+        logsItem.image = NSImage(systemSymbolName: "doc.text.magnifyingglass", accessibilityDescription: nil)
+
+        let submenu = NSMenu(title: "Show Logs")
+
+        let openFileItem = NSMenuItem(title: "Open Log File", action: #selector(openLogFile), keyEquivalent: "")
+        openFileItem.target = self
+        openFileItem.image = NSImage(systemSymbolName: "doc.text", accessibilityDescription: nil)
+        submenu.addItem(openFileItem)
+
+        let openFolderItem = NSMenuItem(title: "Open Logs Folder", action: #selector(openLogFolder), keyEquivalent: "")
+        openFolderItem.target = self
+        openFolderItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+        submenu.addItem(openFolderItem)
+
+        logsItem.submenu = submenu
+        menu.addItem(logsItem)
+    }
+
+    @objc private func openLogFile() {
+        LoggerService.openLogFile()
+    }
+
+    @objc private func openLogFolder() {
+        LoggerService.openLogDirectory()
     }
 
     @objc private func clearFinishedConversions() {
@@ -335,7 +373,7 @@ private extension OutputType.Category {
 
 private extension ConversionJob {
     var menuTitle: String {
-        let truncated = fileName.truncatedWithExtension(maxLength: 48)
+        let truncated = fileName.truncatedWithExtension(maxLength: 36)
         switch state {
         case .queued:
             return "\(truncated) - Queued"
@@ -344,6 +382,10 @@ private extension ConversionJob {
         case .completed:
             return "\(truncated) - Done"
         case .failed:
+            if let error = errorMessage, !error.isEmpty {
+                let shortError = error.prefix(40)
+                return "\(truncated) - Failed: \(shortError)"
+            }
             return "\(truncated) - Failed"
         case .cancelled:
             return "\(truncated) - Cancelled"
