@@ -23,7 +23,6 @@ jobs:
 
       - name: Install binary dependencies
         run: |
-          brew install imagemagick ghostscript
           bash Middleware/Scripts/download-binaries.sh
 
       - name: Build
@@ -34,6 +33,19 @@ jobs:
             -derivedDataPath ./Build \
             -destination "generic/platform=macOS" \
             build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Test
+        run: |
+          xcodebuild -project convertfile43.xcodeproj \
+            -scheme convertfile43 \
+            -configuration Debug \
+            -derivedDataPath ./Build \
+            -destination "platform=macOS" \
+            test \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_ENTITLEMENTS="" \

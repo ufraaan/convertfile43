@@ -25,7 +25,6 @@ jobs:
 
       - name: Install binary dependencies
         run: |
-          brew install imagemagick ghostscript
           bash "$GITHUB_WORKSPACE/Middleware/Scripts/download-binaries.sh"
 
       - name: Build
