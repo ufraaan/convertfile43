@@ -7,23 +7,9 @@ APP_NAME="convertfile43"
 APP_PATH="./Build/Release/$APP_NAME.app"
 DMG_NAME="${APP_NAME}-1.0.0.dmg"
 DMG_PATH="./Build/$DMG_NAME"
-STAGING_DIR="./Build/dmg-staging"
 
-echo "=== Cleaning ==="
-rm -rf "$STAGING_DIR" "$DMG_PATH"
-mkdir -p "$STAGING_DIR"
-
-echo "=== Copying app ==="
-cp -R "$APP_PATH" "$STAGING_DIR/"
-
-echo "=== Adding Applications symlink ==="
-ln -s /Applications "$STAGING_DIR/Applications"
-
-echo "=== Creating DMG ==="
-hdiutil create -volname "$APP_NAME" \
-    -srcfolder "$STAGING_DIR" \
-    -ov -format UDZO \
-    "$DMG_PATH"
+echo "=== Creating customized DMG ==="
+bash Installer/build-dmg.sh "$APP_PATH" "$APP_NAME" "$DMG_PATH"
 
 echo "=== Signing DMG ==="
 codesign -s "Developer ID Application" "$DMG_PATH"
