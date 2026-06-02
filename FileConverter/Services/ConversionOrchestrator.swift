@@ -120,22 +120,34 @@ final class ConversionOrchestrator {
         let input = job.inputURL.path
         let output = job.outputURL.path
 
+        let jobId = job.id
+        let progressHandler: @Sendable (Double) -> Void = { [weak self] progress in
+            guard progress >= 0 else { return }
+            Task { @MainActor in
+                guard let self,
+                      let idx = self.jobs.firstIndex(where: { $0.id == jobId }) else { return }
+                if self.jobs[idx].state == .running {
+                    self.jobs[idx].progress = progress
+                }
+            }
+        }
+
         switch preset.outputType {
         case .pdf where ["doc", "docx", "odt", "ppt", "pptx", "odp", "xls", "xlsx", "ods"].contains(job.inputURL.pathExtension.lowercased()):
-            try await runLibreOffice(input: job.inputURL.path)
+            try await runLibreOffice(input: job.inputURL.path, progressHandler: progressHandler)
         default:
-            try await runFFmpeg(input: input, output: output, settings: preset.settings, outputType: preset.outputType)
+            try await runFFmpeg(input: input, output: output, settings: preset.settings, outputType: preset.outputType, progressHandler: progressHandler)
         }
     }
 
-    private nonisolated func runFFmpeg(input: String, output: String, settings: ConversionSettings, outputType: OutputType) async throws {
+    private nonisolated func runFFmpeg(input: String, output: String, settings: ConversionSettings, outputType: OutputType, progressHandler: @Sendable @escaping (Double) -> Void) async throws {
         let args = FFmpegService.buildArguments(input: input, output: output, settings: settings, outputType: outputType)
         let executable = BundlePaths.ffmpeg
         LoggerService.debug("Executable: \(executable) | Output type: \(outputType.rawValue) | Args: \(args.joined(separator: " "))", component: "ConversionOrchestrator")
-        try await runProcess(executable: executable, arguments: args)
+        try await runProcess(executable: executable, arguments: args, progressHandler: progressHandler)
     }
 
-    private nonisolated func runLibreOffice(input: String) async throws {
+    private nonisolated func runLibreOffice(input: String, progressHandler: @Sendable @escaping (Double) -> Void) async throws {
         guard LibreOfficeService.isAvailable else {
             LoggerService.error("LibreOffice not found at /Applications/LibreOffice.app", component: "ConversionOrchestrator")
             throw ConversionError.libreOfficeNotFound
@@ -143,11 +155,11 @@ final class ConversionOrchestrator {
         let outputDir = URL(fileURLWithPath: input).deletingLastPathComponent().path
         let args = LibreOfficeService.buildConvertToPDFArguments(input: input, outputDir: outputDir)
         LoggerService.debug("LibreOffice with args: \(args.joined(separator: " "))", component: "ConversionOrchestrator")
-        try await runProcess(executable: LibreOfficeService.executablePath, arguments: args)
+        try await runProcess(executable: LibreOfficeService.executablePath, arguments: args, progressHandler: progressHandler)
     }
 
     @discardableResult
-    private nonisolated func runProcess(executable: String, arguments: [String]) async throws -> String {
+    private nonisolated func runProcess(executable: String, arguments: [String], progressHandler: @Sendable @escaping (Double) -> Void) async throws -> String {
         let stdoutURL = FileManager.default.temporaryDirectory.appendingPathComponent("cf43-stdout-\(UUID().uuidString).log")
         let stderrURL = FileManager.default.temporaryDirectory.appendingPathComponent("cf43-stderr-\(UUID().uuidString).log")
         FileManager.default.createFile(atPath: stdoutURL.path, contents: nil)
@@ -179,7 +191,10 @@ final class ConversionOrchestrator {
 
             LoggerService.debug("Running: \(executable) with \(arguments.count) arg(s)", component: "ConversionOrchestrator")
 
+            let monitorBox = MonitorTaskBox()
+
             process.terminationHandler = { proc in
+                monitorBox.task?.cancel()
                 try? stdoutHandle.close()
                 try? stderrHandle.close()
 
@@ -200,8 +215,38 @@ final class ConversionOrchestrator {
             do {
                 try process.run()
             } catch {
+                monitorBox.task?.cancel()
                 continuation.resume(throwing: error)
+                return
             }
+
+            let stderrForMonitor = stderrURL
+            let monitorTask = Task.detached(priority: .utility) {
+                guard let readHandle = try? FileHandle(forReadingFrom: stderrForMonitor) else {
+                    return
+                }
+                defer { try? readHandle.close() }
+
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .milliseconds(500))
+                    if Task.isCancelled { break }
+
+                    do {
+                        try readHandle.seek(toOffset: 0)
+                        let data = try readHandle.readToEnd() ?? Data()
+                        if !data.isEmpty,
+                           let text = String(data: data, encoding: .utf8) {
+                            let pct = FFmpegProgressParser.progress(from: text)
+                            if pct >= 0 {
+                                progressHandler(pct)
+                            }
+                        }
+                    } catch {
+                        return
+                    }
+                }
+            }
+            monitorBox.task = monitorTask
         }
     }
 }
@@ -218,4 +263,8 @@ enum ConversionError: Error, LocalizedError {
             return "Conversion failed (exit code \(code)): \(stderr)"
         }
     }
+}
+
+private final class MonitorTaskBox: @unchecked Sendable {
+    var task: Task<Void, Never>?
 }
