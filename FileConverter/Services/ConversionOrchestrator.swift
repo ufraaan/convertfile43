@@ -31,6 +31,9 @@ final class ConversionOrchestrator {
         )
         jobs.append(job)
 
+        LoggerService.info("Queued conversion: \(job.fileName) → \(preset.name) (output: \(job.outputFileName))",
+            component: "ConversionOrchestrator")
+
         if !isProcessing {
             Task { @MainActor in processNext() }
         }
@@ -47,11 +50,14 @@ final class ConversionOrchestrator {
     func cancelJob(id: UUID) {
         guard let index = jobs.firstIndex(where: { $0.id == id }) else { return }
         jobs[index].state = .cancelled
+        LoggerService.info("Cancelled job: \(jobs[index].fileName)", component: "ConversionOrchestrator")
     }
 
     @MainActor
     func clearCompleted() {
+        let count = jobs.filter { $0.state == .completed || $0.state == .failed || $0.state == .cancelled }.count
         jobs.removeAll { $0.state == .completed || $0.state == .failed || $0.state == .cancelled }
+        LoggerService.info("Cleared \(count) finished job(s)", component: "ConversionOrchestrator")
     }
 
     @MainActor
@@ -69,6 +75,8 @@ final class ConversionOrchestrator {
         let preset = settings.presets.first { $0.name == job.presetName }
             ?? ConversionPreset(name: job.presetName, inputExtensions: [], outputType: .mp4)
 
+        LoggerService.info("Starting conversion: \(job.fileName) → \(preset.name)", component: "ConversionOrchestrator")
+
         Task {
             do {
                 try await convert(job: job, preset: preset)
@@ -77,6 +85,8 @@ final class ConversionOrchestrator {
                     self.jobs[idx].state = .completed
                     self.jobs[idx].progress = 100
                     self.isProcessing = false
+                    LoggerService.info("Conversion completed: \(job.fileName) → \(job.outputFileName)",
+                        component: "ConversionOrchestrator")
                     NotificationService.sendCompletionNotification(job: self.jobs[idx])
                     if self.settings.revealInFinderOnComplete {
                         NSWorkspace.shared.activateFileViewerSelecting([self.jobs[idx].outputURL])
@@ -93,6 +103,8 @@ final class ConversionOrchestrator {
                     self.jobs[idx].state = .failed
                     self.jobs[idx].errorMessage = error.localizedDescription
                     self.isProcessing = false
+                    LoggerService.error("Conversion failed: \(job.fileName) — \(error.localizedDescription)",
+                        component: "ConversionOrchestrator")
                     NotificationService.sendErrorNotification(job: self.jobs[idx])
                     Task {
                         try? await Task.sleep(for: self.cleanupDelay)
@@ -109,71 +121,88 @@ final class ConversionOrchestrator {
         let output = job.outputURL.path
 
         switch preset.outputType {
-        case .pdf where preset.inputExtensions.contains(job.inputURL.pathExtension.lowercased()):
-            try await runImageMagick(input: input, output: output, settings: preset.settings)
-
         case .pdf where ["doc", "docx", "odt", "ppt", "pptx", "odp", "xls", "xlsx", "ods"].contains(job.inputURL.pathExtension.lowercased()):
             try await runLibreOffice(input: job.inputURL.path)
-
-        case .pdf:
-            try await runImageMagick(input: input, output: output, settings: preset.settings)
-
-        case .avif, .jpg, .png, .webp, .ico:
-            try await runImageMagick(input: input, output: output, settings: preset.settings)
-
-        case .gif:
-            try await runFFmpeg(input: input, output: output, settings: preset.settings, outputType: preset.outputType)
-
-        case .mp4, .mkv, .avi, .webm, .ogv:
-            try await runFFmpeg(input: input, output: output, settings: preset.settings, outputType: preset.outputType)
-
-        case .mp3, .aac, .flac, .ogg, .wav:
+        default:
             try await runFFmpeg(input: input, output: output, settings: preset.settings, outputType: preset.outputType)
         }
     }
 
     private nonisolated func runFFmpeg(input: String, output: String, settings: ConversionSettings, outputType: OutputType) async throws {
         let args = FFmpegService.buildArguments(input: input, output: output, settings: settings, outputType: outputType)
-        try await runProcess(executable: BundlePaths.ffmpeg, arguments: args)
-    }
-
-    private nonisolated func runImageMagick(input: String, output: String, settings: ConversionSettings) async throws {
-        let args = ImageMagickService.buildArguments(input: input, output: output, settings: settings)
-        try await runProcess(executable: BundlePaths.imagemagick, arguments: args)
+        let executable = BundlePaths.ffmpeg
+        LoggerService.debug("Executable: \(executable) | Output type: \(outputType.rawValue) | Args: \(args.joined(separator: " "))", component: "ConversionOrchestrator")
+        try await runProcess(executable: executable, arguments: args)
     }
 
     private nonisolated func runLibreOffice(input: String) async throws {
         guard LibreOfficeService.isAvailable else {
+            LoggerService.error("LibreOffice not found at /Applications/LibreOffice.app", component: "ConversionOrchestrator")
             throw ConversionError.libreOfficeNotFound
         }
         let outputDir = URL(fileURLWithPath: input).deletingLastPathComponent().path
         let args = LibreOfficeService.buildConvertToPDFArguments(input: input, outputDir: outputDir)
+        LoggerService.debug("LibreOffice with args: \(args.joined(separator: " "))", component: "ConversionOrchestrator")
         try await runProcess(executable: LibreOfficeService.executablePath, arguments: args)
     }
 
     @discardableResult
     private nonisolated func runProcess(executable: String, arguments: [String]) async throws -> String {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: executable)
-        process.arguments = arguments
+        let stdoutURL = FileManager.default.temporaryDirectory.appendingPathComponent("cf43-stdout-\(UUID().uuidString).log")
+        let stderrURL = FileManager.default.temporaryDirectory.appendingPathComponent("cf43-stderr-\(UUID().uuidString).log")
+        FileManager.default.createFile(atPath: stdoutURL.path, contents: nil)
+        FileManager.default.createFile(atPath: stderrURL.path, contents: nil)
 
-        let stdoutPipe = Pipe()
-        let stderrPipe = Pipe()
-        process.standardOutput = stdoutPipe
-        process.standardError = stderrPipe
-
-        try process.run()
-        process.waitUntilExit()
-
-        let stderrData = stderrPipe.fileHandleForReading.readDataToEndOfFile()
-        let stderr = String(data: stderrData, encoding: .utf8) ?? ""
-
-        guard process.terminationStatus == 0 else {
-            throw ConversionError.processFailed(exitCode: process.terminationStatus, stderr: stderr)
+        defer {
+            try? FileManager.default.removeItem(at: stdoutURL)
+            try? FileManager.default.removeItem(at: stderrURL)
         }
 
-        let stdoutData = stdoutPipe.fileHandleForReading.readDataToEndOfFile()
-        return String(data: stdoutData, encoding: .utf8) ?? ""
+        return try await withCheckedThrowingContinuation { continuation in
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: executable)
+            process.arguments = arguments
+
+            let stdoutHandle: FileHandle
+            let stderrHandle: FileHandle
+            do {
+                stdoutHandle = try FileHandle(forWritingTo: stdoutURL)
+                stderrHandle = try FileHandle(forWritingTo: stderrURL)
+            } catch {
+                continuation.resume(throwing: error)
+                return
+            }
+
+            process.standardOutput = stdoutHandle
+            process.standardError = stderrHandle
+            process.standardInput = FileHandle.nullDevice
+
+            LoggerService.debug("Running: \(executable) with \(arguments.count) arg(s)", component: "ConversionOrchestrator")
+
+            process.terminationHandler = { proc in
+                try? stdoutHandle.close()
+                try? stderrHandle.close()
+
+                let stdout = (try? String(contentsOf: stdoutURL, encoding: .utf8)) ?? ""
+                let stderr = (try? String(contentsOf: stderrURL, encoding: .utf8)) ?? ""
+
+                guard proc.terminationStatus == 0 else {
+                    LoggerService.error("Process exited with code \(proc.terminationStatus): \(executable)\n  stderr: \(stderr)",
+                        component: "ConversionOrchestrator")
+                    continuation.resume(throwing: ConversionError.processFailed(exitCode: proc.terminationStatus, stderr: stderr))
+                    return
+                }
+
+                LoggerService.debug("Process completed successfully: \(executable)", component: "ConversionOrchestrator")
+                continuation.resume(returning: stdout)
+            }
+
+            do {
+                try process.run()
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        }
     }
 }
 
