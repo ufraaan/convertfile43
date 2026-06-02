@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0F4929DC8164B2EF1179FC9E"
-               BuildableName = "FileConverter.app"
-               BlueprintName = "FileConverter"
-               ReferencedContainer = "container:FileConverter.xcodeproj">
+               BlueprintIdentifier = "780D9B1C0A3280D05DBFC39D"
+               BuildableName = "convertfile43.app"
+               BlueprintName = "convertfile43"
+               ReferencedContainer = "container:convertfile43.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0F4929DC8164B2EF1179FC9E"
-            BuildableName = "FileConverter.app"
-            BlueprintName = "FileConverter"
-            ReferencedContainer = "container:FileConverter.xcodeproj">
+            BlueprintIdentifier = "780D9B1C0A3280D05DBFC39D"
+            BuildableName = "convertfile43.app"
+            BlueprintName = "convertfile43"
+            ReferencedContainer = "container:convertfile43.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0F4929DC8164B2EF1179FC9E"
-            BuildableName = "FileConverter.app"
-            BlueprintName = "FileConverter"
-            ReferencedContainer = "container:FileConverter.xcodeproj">
+            BlueprintIdentifier = "780D9B1C0A3280D05DBFC39D"
+            BuildableName = "convertfile43.app"
+            BlueprintName = "convertfile43"
+            ReferencedContainer = "container:convertfile43.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0F4929DC8164B2EF1179FC9E"
-            BuildableName = "FileConverter.app"
-            BlueprintName = "FileConverter"
-            ReferencedContainer = "container:FileConverter.xcodeproj">
+            BlueprintIdentifier = "780D9B1C0A3280D05DBFC39D"
+            BuildableName = "convertfile43.app"
+            BlueprintName = "convertfile43"
+            ReferencedContainer = "container:convertfile43.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>

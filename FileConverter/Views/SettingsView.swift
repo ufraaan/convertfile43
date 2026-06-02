@@ -48,7 +48,7 @@ struct AboutView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.tint)
 
-            Text("File Converter")
+            Text("convertfile43")
                 .font(.title)
 
             Text("Version 1.0.0")

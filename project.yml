@@ -1,4 +1,4 @@
-name: FileConverter
+name: convertfile43
 options:
   bundleIdPrefix: com.fileconverter
   deploymentTarget:
@@ -13,7 +13,7 @@ settings:
     CODE_SIGN_STYLE: Manual
 
 targets:
-  FileConverter:
+  convertfile43:
     type: application
     platform: macOS
     sources:
@@ -22,7 +22,7 @@ targets:
           - "**/*.plist"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.fileconverter.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.convertfile43.app
         INFOPLIST_FILE: FileConverter/Info.plist
         CODE_SIGN_ENTITLEMENTS: FileConverter/Entitlements.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -39,23 +39,23 @@ targets:
     dependencies: []
 
 schemes:
-  FileConverter:
+  convertfile43:
     build:
       targets:
-        FileConverter: all
+        convertfile43: all
     run:
       config: Debug
       targets:
-        FileConverter: all
+        convertfile43: all
     profile:
       config: Release
       targets:
-        FileConverter: all
+        convertfile43: all
     analyze:
       config: Debug
       targets:
-        FileConverter: all
+        convertfile43: all
     archive:
       config: Release
       targets:
-        FileConverter: all
+        convertfile43: all

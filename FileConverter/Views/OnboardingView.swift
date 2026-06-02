@@ -10,7 +10,7 @@ struct OnboardingView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(Color.accentColor)
 
-            Text("Welcome to File Converter")
+            Text("Welcome to convertfile43")
                 .font(.largeTitle)
                 .bold()
 
@@ -18,8 +18,8 @@ struct OnboardingView: View {
 
             VStack(alignment: .leading, spacing: 12) {
                 OnboardingStep(number: 1, text: "Open System Settings → Privacy & Security → Extensions")
-                OnboardingStep(number: 2, text: "Enable \"File Converter Finder Sync\" under Finder Extensions")
-                OnboardingStep(number: 3, text: "Right-click any file in Finder and choose \"Convert with File Converter\"")
+                OnboardingStep(number: 2, text: "Copy files in Finder (⌘C)")
+                OnboardingStep(number: 3, text: "Click the menu bar icon and pick a format")
             }
             .padding()
 

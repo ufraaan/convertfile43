@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct FileConverterApp: App {
+struct convertfile43App: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

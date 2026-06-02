@@ -31,41 +31,37 @@ jobs:
       - name: Build
         run: |
           cd "$GITHUB_WORKSPACE"
-          xcodebuild -project FileConverter.xcodeproj \
-            -scheme FileConverter \
+          xcodebuild -project convertfile43.xcodeproj \
+            -scheme convertfile43 \
             -configuration Release \
-            -derivedDataPath Build \
+            -derivedDataPath "Build" \
+            -destination "generic/platform=macOS" \
+            build \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            clean build
+            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGNING_ALLOWED=NO
 
-      - name: Import signing certificate
-        if: vars.APPLE_DEVELOPER_ID != ''
-        env:
-          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-          CERT_PASSWORD: ${{ secrets.BUILD_CERTIFICATE_P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      - name: Locate built app
         run: |
-          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > cert.p12
-          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security import cert.p12 -k build.keychain -P "$CERT_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          echo "app=Build/Build/Products/Release/convertfile43.app" >> $GITHUB_OUTPUT
 
-      - name: Sign app
-        if: vars.APPLE_DEVELOPER_ID != ''
+      - name: Check signing identity
+        id: check_signing
         run: |
-          codesign --force --deep --sign "${{ vars.APPLE_DEVELOPER_ID }}" \
-            "Build/Build/Products/Release/FileConverter.app"
+          if security find-identity -v -p basic -p macappstore 2>/dev/null | grep -q "Developer ID Application"; then
+            echo "has_identity=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_identity=false" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Create DMG
+      - name: Sign the app
+        if: steps.check_signing.outputs.has_identity == 'true'
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          APP="Build/Build/Products/Release/FileConverter.app"
-          DMG="FileConverter-$VERSION.dmg"
-          hdiutil create -volname "FileConverter $VERSION" \
+          APP="Build/Build/Products/Release/convertfile43.app"
+          DMG="convertfile43-$VERSION.dmg"
+          codesign --deep --force --verify --verbose --sign "Developer ID Application: ${{ secrets.DEVELOPER_NAME }}" "$APP"
+          hdiutil create -volname "convertfile43 $VERSION" \
             -srcfolder "$APP" \
             -ov -format UDZO \
             "$DMG"

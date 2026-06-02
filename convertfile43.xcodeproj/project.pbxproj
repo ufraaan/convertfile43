@@ -1,0 +1,479 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07D63A9404D90FAF8A24A5F5 /* ClipboardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */; };
+		08286DEC42FE7F8B85979AC8 /* Settings.default.json in Resources */ = {isa = PBXBuildFile; fileRef = 16007831D2577F0DFD93ADA8 /* Settings.default.json */; };
+		1107E17214D8F41A9A9143D3 /* PresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2A6C92AFEEDED20CD9BA60 /* PresetStore.swift */; };
+		132961D465644AFBFCAA4237 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFD44A8FAD5D9CFC5CC9F8D /* AppSettings.swift */; };
+		1931ADDCF39F89588B1D74F3 /* PresetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B172D514E0381E2016FFC5 /* PresetListView.swift */; };
+		1BC77EDD5EECCAA941910A2B /* LibreOfficeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61C5C6B3CCAAEC2CD0A3A4F /* LibreOfficeService.swift */; };
+		1DE29791F167CD6F2AA73648 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 555A641AE2E3D6B9B8345A39 /* Assets.xcassets */; };
+		1EE64BAAFF1D26F43EB0EF00 /* GhostscriptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537530ED8D9494FBAFBA74F9 /* GhostscriptService.swift */; };
+		374755D2BCD786EA9E06C174 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE98DEAC0951D8F7FA10E1F7 /* MainViewModel.swift */; };
+		3BAAFFCF563CAA10E69B18F3 /* ConversionJobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6FC0CDF4311C636E2A97CB /* ConversionJobViewModel.swift */; };
+		40EF1854393AFE65501964B4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980C74120797973D946D97A8 /* MainView.swift */; };
+		4E296CC45B977458850E659A /* ConversionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57643F1F70D45FEACC8EC7C4 /* ConversionSettings.swift */; };
+		5294B63D86F8DCFCBB908645 /* BundlePaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87B27A9FF4941C6D899831D /* BundlePaths.swift */; };
+		5AEF25AEE661D896832439D1 /* OutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D141682A29841EF506FAECE4 /* OutputType.swift */; };
+		62963A7EB26E9EAF777F5518 /* ImageMagickService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */; };
+		662B803777C38ABA51248C3E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B28F458839D0B38EFED1BA4 /* OnboardingView.swift */; };
+		72E9F9934F4C0D85D45004AD /* FFmpegService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EECB358FF2FE598647DE55F /* FFmpegService.swift */; };
+		7E382BA9DE2768FD7A0F3C12 /* ConversionJobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AAB2AE6303F7D0A3775D52 /* ConversionJobRow.swift */; };
+		7EACA60ED289907A3B9E6425 /* ConversionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612B7D02D849D5FCAF376F26 /* ConversionState.swift */; };
+		7EB27230099665E5A6D21B5D /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F358932DFECE7A5193A415 /* ProcessRunner.swift */; };
+		88B721982C83C95253937366 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2737D8B0D02D5A0682AA0621 /* NotificationService.swift */; };
+		88F600885D9A148011FFF03C /* FileConverterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D185803CECA39A02AA4D36A /* FileConverterApp.swift */; };
+		ADC80D3A8BED77721BD3B066 /* ConversionJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427132934CC39517601BF96A /* ConversionJob.swift */; };
+		D3E245B3BCF0F4553D461E15 /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7237523B05F92335B8E2C60A /* HelpView.swift */; };
+		D627B002A5E6B29E36566C8A /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6F139209F918BD41363527 /* SettingsViewModel.swift */; };
+		E9506710EA556E516926D743 /* PresetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A873FBFB9E2F8C7965A2268A /* PresetEditorView.swift */; };
+		F4B0D8781FA1C387BC639215 /* ConversionPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA8C50FE0D664E2F6E9D22 /* ConversionPreset.swift */; };
+		F7A5A3BD33D443A6BF915735 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */; };
+		F98522DF6440B214750160CF /* ConversionOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A849E7DD3E9F3D8A646FEF2 /* ConversionOrchestrator.swift */; };
+		FF74C9CD0B94DB2A92042ADD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58229529AA8B918A17CDB417 /* SettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0C6FC0CDF4311C636E2A97CB /* ConversionJobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJobViewModel.swift; sourceTree = "<group>"; };
+		16007831D2577F0DFD93ADA8 /* Settings.default.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Settings.default.json; sourceTree = "<group>"; };
+		20DA8C50FE0D664E2F6E9D22 /* ConversionPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionPreset.swift; sourceTree = "<group>"; };
+		2737D8B0D02D5A0682AA0621 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		2EECB358FF2FE598647DE55F /* FFmpegService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegService.swift; sourceTree = "<group>"; };
+		3C6F139209F918BD41363527 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardReader.swift; sourceTree = "<group>"; };
+		427132934CC39517601BF96A /* ConversionJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJob.swift; sourceTree = "<group>"; };
+		537530ED8D9494FBAFBA74F9 /* GhostscriptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostscriptService.swift; sourceTree = "<group>"; };
+		555A641AE2E3D6B9B8345A39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		57643F1F70D45FEACC8EC7C4 /* ConversionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionSettings.swift; sourceTree = "<group>"; };
+		58229529AA8B918A17CDB417 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		5B28F458839D0B38EFED1BA4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		612B7D02D849D5FCAF376F26 /* ConversionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionState.swift; sourceTree = "<group>"; };
+		6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
+		7237523B05F92335B8E2C60A /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		8A849E7DD3E9F3D8A646FEF2 /* ConversionOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionOrchestrator.swift; sourceTree = "<group>"; };
+		92B172D514E0381E2016FFC5 /* PresetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetListView.swift; sourceTree = "<group>"; };
+		980C74120797973D946D97A8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		9D185803CECA39A02AA4D36A /* FileConverterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileConverterApp.swift; sourceTree = "<group>"; };
+		9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMagickService.swift; sourceTree = "<group>"; };
+		A873FBFB9E2F8C7965A2268A /* PresetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetEditorView.swift; sourceTree = "<group>"; };
+		B7AAB2AE6303F7D0A3775D52 /* ConversionJobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJobRow.swift; sourceTree = "<group>"; };
+		B7F358932DFECE7A5193A415 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
+		CAFD44A8FAD5D9CFC5CC9F8D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		CF2A6C92AFEEDED20CD9BA60 /* PresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetStore.swift; sourceTree = "<group>"; };
+		D141682A29841EF506FAECE4 /* OutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputType.swift; sourceTree = "<group>"; };
+		D61C5C6B3CCAAEC2CD0A3A4F /* LibreOfficeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibreOfficeService.swift; sourceTree = "<group>"; };
+		DE98DEAC0951D8F7FA10E1F7 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		E7B7521867ACDEE91FEF6EF9 /* convertfile43.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = convertfile43.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E87B27A9FF4941C6D899831D /* BundlePaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundlePaths.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		230DACA0E78B345BFF5DD8DE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B7AAB2AE6303F7D0A3775D52 /* ConversionJobRow.swift */,
+				7237523B05F92335B8E2C60A /* HelpView.swift */,
+				980C74120797973D946D97A8 /* MainView.swift */,
+				5B28F458839D0B38EFED1BA4 /* OnboardingView.swift */,
+				A873FBFB9E2F8C7965A2268A /* PresetEditorView.swift */,
+				92B172D514E0381E2016FFC5 /* PresetListView.swift */,
+				58229529AA8B918A17CDB417 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		38C61AE25552966C9CE073FE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CAFD44A8FAD5D9CFC5CC9F8D /* AppSettings.swift */,
+				427132934CC39517601BF96A /* ConversionJob.swift */,
+				20DA8C50FE0D664E2F6E9D22 /* ConversionPreset.swift */,
+				57643F1F70D45FEACC8EC7C4 /* ConversionSettings.swift */,
+				612B7D02D849D5FCAF376F26 /* ConversionState.swift */,
+				D141682A29841EF506FAECE4 /* OutputType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		423EA77FE5269DC61FE99758 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E7B7521867ACDEE91FEF6EF9 /* convertfile43.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		671ACBFC411D8414EDF1B3C3 = {
+			isa = PBXGroup;
+			children = (
+				E1B1887739960DBAD4E8C19D /* FileConverter */,
+				423EA77FE5269DC61FE99758 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6DD9683E1A8ABBE7CDDB2E97 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				555A641AE2E3D6B9B8345A39 /* Assets.xcassets */,
+				16007831D2577F0DFD93ADA8 /* Settings.default.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		78CC40A7AF075E88F7FC3A91 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E87B27A9FF4941C6D899831D /* BundlePaths.swift */,
+				3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */,
+				6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */,
+				B7F358932DFECE7A5193A415 /* ProcessRunner.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		D5B4F3BCC9086DBFC20076C6 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				0C6FC0CDF4311C636E2A97CB /* ConversionJobViewModel.swift */,
+				DE98DEAC0951D8F7FA10E1F7 /* MainViewModel.swift */,
+				3C6F139209F918BD41363527 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E1B1887739960DBAD4E8C19D /* FileConverter */ = {
+			isa = PBXGroup;
+			children = (
+				9D185803CECA39A02AA4D36A /* FileConverterApp.swift */,
+				38C61AE25552966C9CE073FE /* Models */,
+				6DD9683E1A8ABBE7CDDB2E97 /* Resources */,
+				F4B8660B8A0E6BFEBB4E273F /* Services */,
+				78CC40A7AF075E88F7FC3A91 /* Utilities */,
+				D5B4F3BCC9086DBFC20076C6 /* ViewModels */,
+				230DACA0E78B345BFF5DD8DE /* Views */,
+			);
+			path = FileConverter;
+			sourceTree = "<group>";
+		};
+		F4B8660B8A0E6BFEBB4E273F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8A849E7DD3E9F3D8A646FEF2 /* ConversionOrchestrator.swift */,
+				2EECB358FF2FE598647DE55F /* FFmpegService.swift */,
+				537530ED8D9494FBAFBA74F9 /* GhostscriptService.swift */,
+				9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */,
+				D61C5C6B3CCAAEC2CD0A3A4F /* LibreOfficeService.swift */,
+				2737D8B0D02D5A0682AA0621 /* NotificationService.swift */,
+				CF2A6C92AFEEDED20CD9BA60 /* PresetStore.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		780D9B1C0A3280D05DBFC39D /* convertfile43 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECDB5567392EE3ECF5AD5B94 /* Build configuration list for PBXNativeTarget "convertfile43" */;
+			buildPhases = (
+				3B4737319FE87855971763CC /* Bundle Binary Dependencies */,
+				C506EB02771746F06D23EC70 /* Sources */,
+				772B77BBD7F8EF0544526F0F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = convertfile43;
+			packageProductDependencies = (
+			);
+			productName = convertfile43;
+			productReference = E7B7521867ACDEE91FEF6EF9 /* convertfile43.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BD2D8385B3904AC35D718A9F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					780D9B1C0A3280D05DBFC39D = {
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = A80EADC082EB81BF6E4A508E /* Build configuration list for PBXProject "convertfile43" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 671ACBFC411D8414EDF1B3C3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 423EA77FE5269DC61FE99758 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				780D9B1C0A3280D05DBFC39D /* convertfile43 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		772B77BBD7F8EF0544526F0F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1DE29791F167CD6F2AA73648 /* Assets.xcassets in Resources */,
+				08286DEC42FE7F8B85979AC8 /* Settings.default.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3B4737319FE87855971763CC /* Bundle Binary Dependencies */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle Binary Dependencies";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "RESOURCES_DIR=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\ncp -f \"$SRCROOT/Middleware/binaries/ffmpeg\" \"$RESOURCES_DIR/\"\ncp -f \"$SRCROOT/Middleware/binaries/magick\" \"$RESOURCES_DIR/\"\ncp -f \"$SRCROOT/Middleware/binaries/gs\" \"$RESOURCES_DIR/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C506EB02771746F06D23EC70 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				132961D465644AFBFCAA4237 /* AppSettings.swift in Sources */,
+				5294B63D86F8DCFCBB908645 /* BundlePaths.swift in Sources */,
+				07D63A9404D90FAF8A24A5F5 /* ClipboardReader.swift in Sources */,
+				ADC80D3A8BED77721BD3B066 /* ConversionJob.swift in Sources */,
+				7E382BA9DE2768FD7A0F3C12 /* ConversionJobRow.swift in Sources */,
+				3BAAFFCF563CAA10E69B18F3 /* ConversionJobViewModel.swift in Sources */,
+				F98522DF6440B214750160CF /* ConversionOrchestrator.swift in Sources */,
+				F4B0D8781FA1C387BC639215 /* ConversionPreset.swift in Sources */,
+				4E296CC45B977458850E659A /* ConversionSettings.swift in Sources */,
+				7EACA60ED289907A3B9E6425 /* ConversionState.swift in Sources */,
+				72E9F9934F4C0D85D45004AD /* FFmpegService.swift in Sources */,
+				88F600885D9A148011FFF03C /* FileConverterApp.swift in Sources */,
+				1EE64BAAFF1D26F43EB0EF00 /* GhostscriptService.swift in Sources */,
+				D3E245B3BCF0F4553D461E15 /* HelpView.swift in Sources */,
+				62963A7EB26E9EAF777F5518 /* ImageMagickService.swift in Sources */,
+				1BC77EDD5EECCAA941910A2B /* LibreOfficeService.swift in Sources */,
+				40EF1854393AFE65501964B4 /* MainView.swift in Sources */,
+				374755D2BCD786EA9E06C174 /* MainViewModel.swift in Sources */,
+				F7A5A3BD33D443A6BF915735 /* MenuBarManager.swift in Sources */,
+				88B721982C83C95253937366 /* NotificationService.swift in Sources */,
+				662B803777C38ABA51248C3E /* OnboardingView.swift in Sources */,
+				5AEF25AEE661D896832439D1 /* OutputType.swift in Sources */,
+				E9506710EA556E516926D743 /* PresetEditorView.swift in Sources */,
+				1931ADDCF39F89588B1D74F3 /* PresetListView.swift in Sources */,
+				1107E17214D8F41A9A9143D3 /* PresetStore.swift in Sources */,
+				7EB27230099665E5A6D21B5D /* ProcessRunner.swift in Sources */,
+				FF74C9CD0B94DB2A92042ADD /* SettingsView.swift in Sources */,
+				D627B002A5E6B29E36566C8A /* SettingsViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2B865191CEC196E8BB88E2BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FileConverter/Entitlements.plist;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FileConverter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.app;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+			};
+			name = Debug;
+		};
+		C438B72AA7ABDF4D37985989 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		CEB56E537789BBC51E6A9FF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		FE2EB884ACE107B3432920B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FileConverter/Entitlements.plist;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = FileConverter/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.app;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80EADC082EB81BF6E4A508E /* Build configuration list for PBXProject "convertfile43" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEB56E537789BBC51E6A9FF1 /* Debug */,
+				C438B72AA7ABDF4D37985989 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ECDB5567392EE3ECF5AD5B94 /* Build configuration list for PBXNativeTarget "convertfile43" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B865191CEC196E8BB88E2BD /* Debug */,
+				FE2EB884ACE107B3432920B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BD2D8385B3904AC35D718A9F /* Project object */;
+}

@@ -4,21 +4,21 @@ struct HelpView: View {
     var body: some View {
         TabView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("How to Use File Converter")
+                Text("How to Use convertfile43")
                     .font(.title2)
                     .bold()
 
                 Group {
-                    Text("1. Right-click any file in Finder")
-                    Text("2. Select \"Convert with File Converter\"")
-                    Text("3. Choose a preset from the submenu")
-                    Text("4. The app will convert and save the file")
+                    Text("1. Copy files in Finder (Cmd+C)")
+                    Text("2. Click the menu bar icon")
+                    Text("3. Pick a format under Audio, Video, Image, or Document")
+                    Text("4. Converted files appear next to the originals")
                 }
                 .font(.body)
 
                 Divider()
 
-                Text("You can also drag and drop files onto the app window.")
+                Text("The app lives in your menu bar -- no windows needed.")
                     .foregroundStyle(.secondary)
             }
             .padding()

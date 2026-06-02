@@ -14,7 +14,7 @@
     <true/>
     <key>com.apple.security.application-groups</key>
     <array>
-        <string>$(TeamIdentifierPrefix)com.fileconverter.app</string>
+        <string>$(TeamIdentifierPrefix)com.convertfile43.app</string>
     </array>
 </dict>
 </plist>

@@ -11,7 +11,7 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
         self.orchestrator = orchestrator
 
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        if let image = NSImage(systemSymbolName: "rectangle.2.swap", accessibilityDescription: "File Converter") {
+        if let image = NSImage(systemSymbolName: "rectangle.2.swap", accessibilityDescription: "convertfile43") {
             image.isTemplate = true
             item.button?.image = image
         }
@@ -60,7 +60,7 @@ final class MenuBarManager: NSObject, NSMenuDelegate {
 
         menu.addItem(.separator())
 
-        let quitItem = NSMenuItem(title: "Quit File Converter", action: #selector(quit), keyEquivalent: "q")
+        let quitItem = NSMenuItem(title: "Quit convertfile43", action: #selector(quit), keyEquivalent: "q")
         quitItem.target = self
         menu.addItem(quitItem)
     }

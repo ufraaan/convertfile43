@@ -1,9 +1,9 @@
 #!/bin/bash
-# Creates a signed and notarized DMG for File Converter
+# Creates a signed and notarized DMG for convertfile43
 
 set -euo pipefail
 
-APP_NAME="FileConverter"
+APP_NAME="convertfile43"
 APP_PATH="./Build/Release/$APP_NAME.app"
 DMG_NAME="${APP_NAME}-1.0.0.dmg"
 DMG_PATH="./Build/$DMG_NAME"
