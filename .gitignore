@@ -13,3 +13,6 @@ Middleware/binaries/*
 
 # Generated
 *.generated.swift
+
+# Agent notes (local only)
+AGENTS.md

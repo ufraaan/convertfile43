@@ -49,12 +49,18 @@ if [ ! -f "$GS_DEST" ]; then
   if command -v gs &>/dev/null; then
     GS_BREW=$(command -v gs)
     echo "Copying from brew: $GS_BREW"
-    # gs is typically a symlink; resolve it and copy the real binary
-    cp "$GS_BREW" "$GS_DEST" 2>/dev/null || cp "$(readlink -f "$GS_BREW")" "$GS_DEST" 2>/dev/null || true
-    if [ -f "$GS_DEST" ]; then
-      chmod +x "$GS_DEST"
-      echo "  gs version: $($GS_DEST --version 2>&1)"
-    fi
+    # cp follows symlinks on macOS — copies the real binary
+    cp "$GS_BREW" "$GS_DEST" || {
+      # Fallback: resolve symlink manually (macOS readlink doesn't support -f)
+      resolved="$GS_BREW"
+      while [ -L "$resolved" ]; do
+        target=$(readlink "$resolved")
+        [[ "$target" = /* ]] && resolved="$target" || resolved="$(dirname "$resolved")/$target"
+      done
+      cp "$resolved" "$GS_DEST"
+    }
+    chmod +x "$GS_DEST"
+    echo "  gs version: $($GS_DEST --version 2>&1)"
   else
     echo "  NOT FOUND. Install with: brew install ghostscript"
     echo "  Or download from https://ghostscript.com/releases/"
