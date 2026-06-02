@@ -120,8 +120,8 @@
   .hero-badge {
     display: inline-block;
     font-size: 11px;
-    font-weight: 400;
-    color: #aeaeb2;
+    font-weight: 500;
+    color: #6e6e73;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background: #f5f5f7;
@@ -144,7 +144,7 @@
   .tagline {
     font-size: 14px;
     font-weight: 400;
-    color: #aeaeb2;
+    color: #6e6e73;
     line-height: 1.7;
     letter-spacing: 0;
     margin-bottom: 28px;
@@ -217,8 +217,8 @@
 <nav class="nav">
   <a href="#" class="nav-brand"><em>convert</em>file43</a>
   <div class="nav-links">
-    <a href="https://github.com/ufraaan/FileConverter">GitHub</a>
-    <a href="https://github.com/ufraaan/FileConverter/releases/latest">Download</a>
+    <a href="https://github.com/ufraaan/convertfile43">GitHub</a>
+    <a href="https://github.com/ufraaan/convertfile43/releases/latest">Download</a>
   </div>
 </nav>
 
@@ -233,7 +233,7 @@
     <span class="hero-badge">macOS menu bar app</span>
     <h1>convertfile43.<br>No clicks spared.</h1>
     <p class="tagline">Copy files in Finder, click the menu bar icon, pick a format. Audio, video, images, documents — done.</p>
-    <a href="https://github.com/ufraaan/FileConverter/releases/latest" class="btn-download">
+    <a href="https://github.com/ufraaan/convertfile43/releases/latest" class="btn-download">
       <svg viewBox="0 0 24 24"><path d="M12 4v12M8 14l4 4 4-4M4 18v1a1 1 0 001 1h14a1 1 0 001-1v-1"/></svg>
       Download
     </a>
@@ -244,6 +244,11 @@
   Free &amp; open source &middot; macOS 14+
 </div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
   const frame = document.getElementById('frame');
