@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		07D63A9404D90FAF8A24A5F5 /* ClipboardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */; };
 		08286DEC42FE7F8B85979AC8 /* Settings.default.json in Resources */ = {isa = PBXBuildFile; fileRef = 16007831D2577F0DFD93ADA8 /* Settings.default.json */; };
+		0E165F96BC6A218DC8002B21 /* FFmpegProgressParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F84B50E3F5A83CAC91F21E /* FFmpegProgressParserTests.swift */; };
 		1107E17214D8F41A9A9143D3 /* PresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2A6C92AFEEDED20CD9BA60 /* PresetStore.swift */; };
+		12C39FDB46595DE066DA62D4 /* LoggerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BB6C2CABF22939F912CF1DC /* LoggerService.swift */; };
 		132961D465644AFBFCAA4237 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFD44A8FAD5D9CFC5CC9F8D /* AppSettings.swift */; };
 		1931ADDCF39F89588B1D74F3 /* PresetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B172D514E0381E2016FFC5 /* PresetListView.swift */; };
 		1BC77EDD5EECCAA941910A2B /* LibreOfficeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61C5C6B3CCAAEC2CD0A3A4F /* LibreOfficeService.swift */; };
@@ -19,19 +21,27 @@
 		3BAAFFCF563CAA10E69B18F3 /* ConversionJobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6FC0CDF4311C636E2A97CB /* ConversionJobViewModel.swift */; };
 		40EF1854393AFE65501964B4 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980C74120797973D946D97A8 /* MainView.swift */; };
 		4E296CC45B977458850E659A /* ConversionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57643F1F70D45FEACC8EC7C4 /* ConversionSettings.swift */; };
+		520BFF597DB9362A912EA195 /* ConversionPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09128E82B8F9035D3F6983CE /* ConversionPresetTests.swift */; };
 		5294B63D86F8DCFCBB908645 /* BundlePaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87B27A9FF4941C6D899831D /* BundlePaths.swift */; };
 		5AEF25AEE661D896832439D1 /* OutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D141682A29841EF506FAECE4 /* OutputType.swift */; };
+		5C067A1905228118743233D4 /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9470AFAF87DCE09AF3376B1 /* IntegrationTests.swift */; };
 		62963A7EB26E9EAF777F5518 /* ImageMagickService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */; };
+		657A806A67286415555D0677 /* GhostscriptServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D827F8748CCB6B5B58DDA6 /* GhostscriptServiceTests.swift */; };
+		65D335F9F962C75087FD81D3 /* LibreOfficeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A4FE132C02B3073021F74DF /* LibreOfficeServiceTests.swift */; };
 		662B803777C38ABA51248C3E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B28F458839D0B38EFED1BA4 /* OnboardingView.swift */; };
 		72E9F9934F4C0D85D45004AD /* FFmpegService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EECB358FF2FE598647DE55F /* FFmpegService.swift */; };
 		7E382BA9DE2768FD7A0F3C12 /* ConversionJobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AAB2AE6303F7D0A3775D52 /* ConversionJobRow.swift */; };
 		7EACA60ED289907A3B9E6425 /* ConversionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612B7D02D849D5FCAF376F26 /* ConversionState.swift */; };
 		7EB27230099665E5A6D21B5D /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F358932DFECE7A5193A415 /* ProcessRunner.swift */; };
+		8397A263AC8B977506B68E4E /* FFmpegServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B19EEB24D7DB101BB0A1A0D /* FFmpegServiceTests.swift */; };
+		84682B6BD9A138A1B996D013 /* OutputTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0240EAFCA66C0CE922B78C /* OutputTypeTests.swift */; };
 		88B721982C83C95253937366 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2737D8B0D02D5A0682AA0621 /* NotificationService.swift */; };
 		88F600885D9A148011FFF03C /* FileConverterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D185803CECA39A02AA4D36A /* FileConverterApp.swift */; };
 		ADC80D3A8BED77721BD3B066 /* ConversionJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427132934CC39517601BF96A /* ConversionJob.swift */; };
+		C3D4B0CDB7B6E02757D58806 /* FFmpegProgressParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BB0361389A9D27150A4ABF /* FFmpegProgressParser.swift */; };
 		D3E245B3BCF0F4553D461E15 /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7237523B05F92335B8E2C60A /* HelpView.swift */; };
 		D627B002A5E6B29E36566C8A /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6F139209F918BD41363527 /* SettingsViewModel.swift */; };
+		E578EC7E27642C24D16B7C2F /* ImageMagickServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C414E2F4B5AAA1C8BCB40C /* ImageMagickServiceTests.swift */; };
 		E9506710EA556E516926D743 /* PresetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A873FBFB9E2F8C7965A2268A /* PresetEditorView.swift */; };
 		F4B0D8781FA1C387BC639215 /* ConversionPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA8C50FE0D664E2F6E9D22 /* ConversionPreset.swift */; };
 		F7A5A3BD33D443A6BF915735 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */; };
@@ -39,19 +49,38 @@
 		FF74C9CD0B94DB2A92042ADD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58229529AA8B918A17CDB417 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		64B893519F7C759080CB8EAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BD2D8385B3904AC35D718A9F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 780D9B1C0A3280D05DBFC39D;
+			remoteInfo = convertfile43;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		08C414E2F4B5AAA1C8BCB40C /* ImageMagickServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMagickServiceTests.swift; sourceTree = "<group>"; };
+		09128E82B8F9035D3F6983CE /* ConversionPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionPresetTests.swift; sourceTree = "<group>"; };
+		0B19EEB24D7DB101BB0A1A0D /* FFmpegServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegServiceTests.swift; sourceTree = "<group>"; };
 		0C6FC0CDF4311C636E2A97CB /* ConversionJobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJobViewModel.swift; sourceTree = "<group>"; };
 		16007831D2577F0DFD93ADA8 /* Settings.default.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Settings.default.json; sourceTree = "<group>"; };
+		1D0240EAFCA66C0CE922B78C /* OutputTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputTypeTests.swift; sourceTree = "<group>"; };
 		20DA8C50FE0D664E2F6E9D22 /* ConversionPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionPreset.swift; sourceTree = "<group>"; };
+		23BB0361389A9D27150A4ABF /* FFmpegProgressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegProgressParser.swift; sourceTree = "<group>"; };
 		2737D8B0D02D5A0682AA0621 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		2BB6C2CABF22939F912CF1DC /* LoggerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerService.swift; sourceTree = "<group>"; };
 		2EECB358FF2FE598647DE55F /* FFmpegService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegService.swift; sourceTree = "<group>"; };
+		34D827F8748CCB6B5B58DDA6 /* GhostscriptServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostscriptServiceTests.swift; sourceTree = "<group>"; };
 		3C6F139209F918BD41363527 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardReader.swift; sourceTree = "<group>"; };
+		401388D292F36154C740F344 /* FileConverterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FileConverterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		427132934CC39517601BF96A /* ConversionJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJob.swift; sourceTree = "<group>"; };
 		537530ED8D9494FBAFBA74F9 /* GhostscriptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostscriptService.swift; sourceTree = "<group>"; };
 		555A641AE2E3D6B9B8345A39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		57643F1F70D45FEACC8EC7C4 /* ConversionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionSettings.swift; sourceTree = "<group>"; };
 		58229529AA8B918A17CDB417 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		59F84B50E3F5A83CAC91F21E /* FFmpegProgressParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegProgressParserTests.swift; sourceTree = "<group>"; };
 		5B28F458839D0B38EFED1BA4 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		612B7D02D849D5FCAF376F26 /* ConversionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionState.swift; sourceTree = "<group>"; };
 		6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
@@ -59,9 +88,11 @@
 		8A849E7DD3E9F3D8A646FEF2 /* ConversionOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionOrchestrator.swift; sourceTree = "<group>"; };
 		92B172D514E0381E2016FFC5 /* PresetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetListView.swift; sourceTree = "<group>"; };
 		980C74120797973D946D97A8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		9A4FE132C02B3073021F74DF /* LibreOfficeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibreOfficeServiceTests.swift; sourceTree = "<group>"; };
 		9D185803CECA39A02AA4D36A /* FileConverterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileConverterApp.swift; sourceTree = "<group>"; };
 		9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMagickService.swift; sourceTree = "<group>"; };
 		A873FBFB9E2F8C7965A2268A /* PresetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetEditorView.swift; sourceTree = "<group>"; };
+		A9470AFAF87DCE09AF3376B1 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		B7AAB2AE6303F7D0A3775D52 /* ConversionJobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionJobRow.swift; sourceTree = "<group>"; };
 		B7F358932DFECE7A5193A415 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
 		CAFD44A8FAD5D9CFC5CC9F8D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
@@ -105,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				E7B7521867ACDEE91FEF6EF9 /* convertfile43.app */,
+				401388D292F36154C740F344 /* FileConverterTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				E1B1887739960DBAD4E8C19D /* FileConverter */,
+				7A0E777DC3820C820E51E0D4 /* FileConverterTests */,
 				423EA77FE5269DC61FE99758 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,10 +164,26 @@
 			children = (
 				E87B27A9FF4941C6D899831D /* BundlePaths.swift */,
 				3EA768F2F504AA2B8421B8A4 /* ClipboardReader.swift */,
+				2BB6C2CABF22939F912CF1DC /* LoggerService.swift */,
 				6B2ACAD1E02D3877EC637CEE /* MenuBarManager.swift */,
 				B7F358932DFECE7A5193A415 /* ProcessRunner.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		7A0E777DC3820C820E51E0D4 /* FileConverterTests */ = {
+			isa = PBXGroup;
+			children = (
+				09128E82B8F9035D3F6983CE /* ConversionPresetTests.swift */,
+				59F84B50E3F5A83CAC91F21E /* FFmpegProgressParserTests.swift */,
+				0B19EEB24D7DB101BB0A1A0D /* FFmpegServiceTests.swift */,
+				34D827F8748CCB6B5B58DDA6 /* GhostscriptServiceTests.swift */,
+				08C414E2F4B5AAA1C8BCB40C /* ImageMagickServiceTests.swift */,
+				A9470AFAF87DCE09AF3376B1 /* IntegrationTests.swift */,
+				9A4FE132C02B3073021F74DF /* LibreOfficeServiceTests.swift */,
+				1D0240EAFCA66C0CE922B78C /* OutputTypeTests.swift */,
+			);
+			path = FileConverterTests;
 			sourceTree = "<group>";
 		};
 		D5B4F3BCC9086DBFC20076C6 /* ViewModels */ = {
@@ -165,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				8A849E7DD3E9F3D8A646FEF2 /* ConversionOrchestrator.swift */,
+				23BB0361389A9D27150A4ABF /* FFmpegProgressParser.swift */,
 				2EECB358FF2FE598647DE55F /* FFmpegService.swift */,
 				537530ED8D9494FBAFBA74F9 /* GhostscriptService.swift */,
 				9D8B17B8CC1D64DCA2DDBC39 /* ImageMagickService.swift */,
@@ -197,6 +247,24 @@
 			productReference = E7B7521867ACDEE91FEF6EF9 /* convertfile43.app */;
 			productType = "com.apple.product-type.application";
 		};
+		886583197C7E856699D7260A /* FileConverterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F4AE9771B919BDBC521C1AF /* Build configuration list for PBXNativeTarget "FileConverterTests" */;
+			buildPhases = (
+				926ED273072400A0869574F2 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FAB224A62269D6BF50B77BA5 /* PBXTargetDependency */,
+			);
+			name = FileConverterTests;
+			packageProductDependencies = (
+			);
+			productName = FileConverterTests;
+			productReference = 401388D292F36154C740F344 /* FileConverterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -207,6 +275,9 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					780D9B1C0A3280D05DBFC39D = {
+						ProvisioningStyle = Manual;
+					};
+					886583197C7E856699D7260A = {
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -225,6 +296,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				886583197C7E856699D7260A /* FileConverterTests */,
 				780D9B1C0A3280D05DBFC39D /* convertfile43 */,
 			);
 		};
@@ -260,11 +332,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "RESOURCES_DIR=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\ncp -f \"$SRCROOT/Middleware/binaries/ffmpeg\" \"$RESOURCES_DIR/\"\ncp -f \"$SRCROOT/Middleware/binaries/magick\" \"$RESOURCES_DIR/\"\ncp -f \"$SRCROOT/Middleware/binaries/gs\" \"$RESOURCES_DIR/\"\n";
+			shellScript = "RESOURCES_DIR=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\ncp -f \"$SRCROOT/Middleware/binaries/ffmpeg\" \"$RESOURCES_DIR/\"\ncp -f \"$SRCROOT/Middleware/binaries/gs\" \"$RESOURCES_DIR/\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		926ED273072400A0869574F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				520BFF597DB9362A912EA195 /* ConversionPresetTests.swift in Sources */,
+				0E165F96BC6A218DC8002B21 /* FFmpegProgressParserTests.swift in Sources */,
+				8397A263AC8B977506B68E4E /* FFmpegServiceTests.swift in Sources */,
+				657A806A67286415555D0677 /* GhostscriptServiceTests.swift in Sources */,
+				E578EC7E27642C24D16B7C2F /* ImageMagickServiceTests.swift in Sources */,
+				5C067A1905228118743233D4 /* IntegrationTests.swift in Sources */,
+				65D335F9F962C75087FD81D3 /* LibreOfficeServiceTests.swift in Sources */,
+				84682B6BD9A138A1B996D013 /* OutputTypeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C506EB02771746F06D23EC70 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,12 +366,14 @@
 				F4B0D8781FA1C387BC639215 /* ConversionPreset.swift in Sources */,
 				4E296CC45B977458850E659A /* ConversionSettings.swift in Sources */,
 				7EACA60ED289907A3B9E6425 /* ConversionState.swift in Sources */,
+				C3D4B0CDB7B6E02757D58806 /* FFmpegProgressParser.swift in Sources */,
 				72E9F9934F4C0D85D45004AD /* FFmpegService.swift in Sources */,
 				88F600885D9A148011FFF03C /* FileConverterApp.swift in Sources */,
 				1EE64BAAFF1D26F43EB0EF00 /* GhostscriptService.swift in Sources */,
 				D3E245B3BCF0F4553D461E15 /* HelpView.swift in Sources */,
 				62963A7EB26E9EAF777F5518 /* ImageMagickService.swift in Sources */,
 				1BC77EDD5EECCAA941910A2B /* LibreOfficeService.swift in Sources */,
+				12C39FDB46595DE066DA62D4 /* LoggerService.swift in Sources */,
 				40EF1854393AFE65501964B4 /* MainView.swift in Sources */,
 				374755D2BCD786EA9E06C174 /* MainViewModel.swift in Sources */,
 				F7A5A3BD33D443A6BF915735 /* MenuBarManager.swift in Sources */,
@@ -302,6 +391,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FAB224A62269D6BF50B77BA5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 780D9B1C0A3280D05DBFC39D /* convertfile43 */;
+			targetProxy = 64B893519F7C759080CB8EAD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		2B865191CEC196E8BB88E2BD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -309,13 +406,49 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = FileConverter/Entitlements.plist;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = FileConverter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.app;
+				PRODUCT_MODULE_NAME = convertfile43;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 			};
 			name = Debug;
+		};
+		5387C142A096ADB3CE52DAC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.tests;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/convertfile43.app/Contents/MacOS/convertfile43";
+			};
+			name = Debug;
+		};
+		A814176D2DCFA0D6198BB25A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.tests;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/convertfile43.app/Contents/MacOS/convertfile43";
+			};
+			name = Release;
 		};
 		C438B72AA7ABDF4D37985989 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -444,9 +577,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = FileConverter/Entitlements.plist;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = FileConverter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.convertfile43.app;
+				PRODUCT_MODULE_NAME = convertfile43;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 			};
@@ -455,6 +590,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7F4AE9771B919BDBC521C1AF /* Build configuration list for PBXNativeTarget "FileConverterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5387C142A096ADB3CE52DAC3 /* Debug */,
+				A814176D2DCFA0D6198BB25A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		A80EADC082EB81BF6E4A508E /* Build configuration list for PBXProject "convertfile43" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
