@@ -1,19 +1,15 @@
-<table>
-  <tr>
-    <td valign="middle" width="200">
-      <img src="docs/left.jpg" alt="convertfile43" width="180" style="border-radius: 16px;">
-    </td>
-    <td valign="middle">
-      <h1>convertfile43</h1>
-      <p>Convert audio, video, images, and documents from your menu bar.</p>
-      <p>
-        <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&style=flat" alt="macOS 14+">
-        <img src="https://img.shields.io/github/v/release/ufraaan/convertfile43?label=version&style=flat" alt="Version">
-        <img src="https://img.shields.io/github/license/ufraaan/convertfile43?style=flat" alt="License">
-      </p>
-    </td>
-  </tr>
-</table>
+<div align="center">
+  <img src="docs/left.jpg" alt="convertfile43" width="200" style="border-radius: 16px;">
+  <br><br>
+  <h1>convertfile43</h1>
+  <p>Convert audio, video, images, and documents from your menu bar.</p>
+  <br>
+  <p>
+    <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&style=flat" alt="macOS 14+">
+    <img src="https://img.shields.io/github/v/release/ufraaan/convertfile43?label=version&style=flat" alt="Version">
+    <img src="https://img.shields.io/github/license/ufraaan/convertfile43?style=flat" alt="License">
+  </p>
+</div>
 
 <br>
 
