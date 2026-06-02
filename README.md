@@ -27,8 +27,8 @@ No windows, no drag-and-drop, no settings to configure. Just the menu bar.
 
 - **Menu bar only** - no Dock icon, stays out of your way
 - **Batch conversion** - copy dozens of files, convert all at once
-- **Bundled tools** - ffmpeg, ImageMagick, and Ghostscript included
-- **LibreOffice support** - convert Word, Excel, and PowerPoint to PDF (requires LibreOffice)
+- **Bundled tools** - [ffmpeg](https://ffmpeg.org), [ImageMagick](https://imagemagick.org), and [Ghostscript](https://ghostscript.com) included
+- **LibreOffice support** - convert Word, Excel, and PowerPoint to PDF (requires [LibreOffice](https://www.libreoffice.org))
 - **Notifications** - macOS notification on completion
 
 ## Requirements
