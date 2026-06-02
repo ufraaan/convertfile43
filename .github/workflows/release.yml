@@ -62,10 +62,16 @@ jobs:
         run: |
           APP="Build/Build/Products/Release/convertfile43.app"
           DMG="convertfile43-${{ env.VERSION }}.dmg"
+          STAGING="dmg-staging"
+          rm -rf "$STAGING"
+          mkdir "$STAGING"
+          cp -R "$APP" "$STAGING/"
+          ln -s /Applications "$STAGING/Applications"
           hdiutil create -volname "convertfile43 ${{ env.VERSION }}" \
-            -srcfolder "$APP" \
+            -srcfolder "$STAGING" \
             -ov -format UDZO \
             "$DMG"
+          rm -rf "$STAGING"
           echo "DMG_PATH=$DMG" >> $GITHUB_ENV
 
       - name: Notarize DMG

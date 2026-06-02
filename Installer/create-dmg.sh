@@ -16,6 +16,9 @@ mkdir -p "$STAGING_DIR"
 echo "=== Copying app ==="
 cp -R "$APP_PATH" "$STAGING_DIR/"
 
+echo "=== Adding Applications symlink ==="
+ln -s /Applications "$STAGING_DIR/Applications"
+
 echo "=== Creating DMG ==="
 hdiutil create -volname "$APP_NAME" \
     -srcfolder "$STAGING_DIR" \
