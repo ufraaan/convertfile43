@@ -23,8 +23,17 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           xcodegen generate
 
+      - name: Install Rust
+        run: |
+          if ! command -v cargo &>/dev/null; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          fi
+          cargo --version
+
       - name: Install binary dependencies
         run: |
+          brew install imagemagick ghostscript potrace
           bash "$GITHUB_WORKSPACE/Middleware/Scripts/download-binaries.sh"
 
       - name: Build

@@ -31,11 +31,24 @@ targets:
         DEFINES_MODULE: YES
         PRODUCT_MODULE_NAME: convertfile43
     preBuildScripts:
+      - name: "Generate App Icon"
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ ! -f "$SRCROOT/Installer/app-icon.icns" ]; then
+            bash "$SRCROOT/Installer/generate-app-icon.sh"
+          fi
+      - name: "Build Rust Tool"
+        basedOnDependencyAnalysis: false
+        script: |
+          bash "$SRCROOT/Middleware/Scripts/build-rust-tool.sh"
       - name: "Bundle Binary Dependencies"
         basedOnDependencyAnalysis: false
         script: |
           RESOURCES_DIR="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
           cp -f "$SRCROOT/Middleware/binaries/ffmpeg" "$RESOURCES_DIR/"
+          cp -f "$SRCROOT/Middleware/binaries/ffconv" "$RESOURCES_DIR/"
+          cp -f "$SRCROOT/Middleware/binaries/magick" "$RESOURCES_DIR/"
+          [ -f "$SRCROOT/Middleware/binaries/potrace" ] && cp -f "$SRCROOT/Middleware/binaries/potrace" "$RESOURCES_DIR/"
     dependencies: []
 
   FileConverterTests:
