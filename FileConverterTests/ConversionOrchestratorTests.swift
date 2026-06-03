@@ -6,7 +6,8 @@ final class ConversionOrchestratorTests: XCTestCase {
     var settings: AppSettings!
     var orchestrator: ConversionOrchestrator!
 
-    override func setUp() {
+    override func setUp() async throws {
+        try await super.setUp()
         settings = AppSettings()
         orchestrator = ConversionOrchestrator(settings: settings)
         orchestrator.isProcessing = true
