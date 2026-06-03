@@ -3,17 +3,15 @@ import XCTest
 
 @MainActor
 final class ConversionOrchestratorTests: XCTestCase {
-    var settings: AppSettings!
-    var orchestrator: ConversionOrchestrator!
-
-    override func setUp() async throws {
-        try await super.setUp()
-        settings = AppSettings()
-        orchestrator = ConversionOrchestrator(settings: settings)
-        orchestrator.isProcessing = true
+    private func makeOrchestrator(isProcessing: Bool = true) -> ConversionOrchestrator {
+        let settings = AppSettings()
+        let orchestrator = ConversionOrchestrator(settings: settings)
+        orchestrator.isProcessing = isProcessing
+        return orchestrator
     }
 
     func test_addJob_addsQueuedJob() {
+        let orchestrator = makeOrchestrator()
         let url = URL(fileURLWithPath: "/tmp/test.mp4")
         let preset = ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv)
         orchestrator.addJob(inputURL: url, preset: preset)
@@ -26,6 +24,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_addJob_multipleJobs() {
+        let orchestrator = makeOrchestrator()
         let urls = [
             URL(fileURLWithPath: "/tmp/a.mp4"),
             URL(fileURLWithPath: "/tmp/b.mp4"),
@@ -41,6 +40,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_cancelJob_changesState() {
+        let orchestrator = makeOrchestrator()
         let url = URL(fileURLWithPath: "/tmp/test.mp4")
         orchestrator.addJob(inputURL: url, preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         guard let job = orchestrator.jobs.first else {
@@ -53,11 +53,13 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_cancelJob_unknownId() {
+        let orchestrator = makeOrchestrator()
         orchestrator.cancelJob(id: UUID())
         XCTAssertEqual(orchestrator.jobs.count, 0)
     }
 
     func test_clearCompleted_removesCompleted() {
+        let orchestrator = makeOrchestrator()
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/a.mp4"), preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/b.mp4"), preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         orchestrator.jobs[0].state = .completed
@@ -67,6 +69,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_clearCompleted_keepsRunning() {
+        let orchestrator = makeOrchestrator()
         let mkv = ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv)
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/a.mp4"), preset: mkv)
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/b.mp4"), preset: mkv)
@@ -77,6 +80,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_clearCompleted_keepsQueued() {
+        let orchestrator = makeOrchestrator()
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/a.mp4"), preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/b.mp4"), preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         orchestrator.jobs[0].state = .completed
@@ -86,6 +90,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_removeJobById() {
+        let orchestrator = makeOrchestrator()
         orchestrator.addJob(inputURL: URL(fileURLWithPath: "/tmp/test.mp4"), preset: ConversionPreset(name: "MKV", inputExtensions: ["mp4"], outputType: .mkv))
         guard let job = orchestrator.jobs.first else {
             XCTFail("Expected a queued job")
@@ -96,6 +101,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_addJob_generatesCorrectOutputPath() {
+        let orchestrator = makeOrchestrator()
         let url = URL(fileURLWithPath: "/Users/test/video.mp4")
         let preset = ConversionPreset(name: "JPEG High Quality", inputExtensions: ["mp4"], outputType: .jpg)
         orchestrator.addJob(inputURL: url, preset: preset)
@@ -107,6 +113,7 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_addJob_audioPreset_generatesCorrectOutputPath() {
+        let orchestrator = makeOrchestrator()
         let url = URL(fileURLWithPath: "/Users/test/song.wav")
         let preset = ConversionPreset(name: "MP3 320kbps", inputExtensions: ["wav", "flac"], outputType: .mp3)
         orchestrator.addJob(inputURL: url, preset: preset)
@@ -118,10 +125,12 @@ final class ConversionOrchestratorTests: XCTestCase {
     }
 
     func test_isProcessing_defaultState() {
+        let orchestrator = makeOrchestrator()
         XCTAssertTrue(orchestrator.isProcessing)
     }
 
     func test_jobsArrayOrdering() {
+        let orchestrator = makeOrchestrator()
         let urls = [
             URL(fileURLWithPath: "/tmp/first.mp4"),
             URL(fileURLWithPath: "/tmp/second.mp4"),
