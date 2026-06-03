@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentation - convertfile43</title>
+<meta name="description" content="Documentation for convertfile43, a macOS menu bar file converter.">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fbfbfd;
+    --surface: #ffffff;
+    --text: #1d1d1f;
+    --muted: #6e6e73;
+    --subtle: #86868b;
+    --faint: #aeaeb2;
+    --border: rgba(0, 0, 0, 0.06);
+    --code-bg: #f5f5f7;
+    --accent: #2f5c45;
+    --accent-soft: rgba(47, 92, 69, 0.08);
+    --sidebar-w: 248px;
+    --nav-h: 60px;
+    --content: 700px;
+    --radius-lg: 20px;
+    --radius: 12px;
+    --shadow-card:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 4px 12px rgba(0,0,0,0.05),
+      0 16px 40px rgba(0,0,0,0.06);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--nav-h) + 32px);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* -- Nav (matches homepage) -- */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    height: var(--nav-h);
+    padding: 0 40px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .nav-brand {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--subtle);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav-brand em {
+    font-style: normal;
+    color: var(--text);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    color: var(--subtle);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-links a.is-current {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .version-tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    color: var(--faint);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .version-tag.loaded {
+    opacity: 1;
+  }
+
+  .menu-toggle {
+    display: none;
+    position: absolute;
+    left: 16px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text);
+  }
+
+  /* -- Shell -- */
+  .shell {
+    display: flex;
+    padding-top: var(--nav-h);
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    width: var(--sidebar-w);
+    height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+    padding: 32px 16px 64px 28px;
+  }
+
+  .sidebar-intro {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--faint);
+    padding: 0 10px 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-group { margin-bottom: 28px; }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 0 10px;
+    margin-bottom: 6px;
+  }
+
+  .sidebar-nav a {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .sidebar-nav a:hover {
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  .sidebar-nav a.active {
+    color: var(--text);
+    font-weight: 500;
+    background: var(--accent-soft);
+  }
+
+  .main {
+    flex: 1;
+    margin-left: var(--sidebar-w);
+    margin-right: 0;
+    min-width: 0;
+  }
+
+  .main-inner {
+    max-width: calc(var(--content) + 96px);
+    margin: 0 auto;
+    padding: 0 48px 100px;
+  }
+
+  /* -- Top demo gif -- */
+  .doc-media {
+    margin: 40px 0 0;
+    padding-bottom: 0;
+    max-width: 620px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .doc-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  /* -- Sections -- */
+  .doc-section {
+    margin: 0;
+    padding: 52px 0;
+    max-width: 620px;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: calc(var(--nav-h) + 24px);
+  }
+
+  .doc-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .doc-section h2 {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .section-lead {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 28px;
+    max-width: 540px;
+  }
+
+  .doc-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 36px 0 10px;
+    color: var(--text);
+  }
+
+  .doc-section p {
+    margin-bottom: 14px;
+    color: var(--muted);
+    max-width: 620px;
+  }
+
+  .doc-section p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .doc-section ul,
+  .doc-section ol {
+    margin: 0 0 18px 0;
+    padding-left: 0;
+    list-style: none;
+    max-width: 620px;
+  }
+
+  .doc-section ul li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .doc-section ol.steps li {
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 22px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .doc-section ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.55;
+  }
+
+  .doc-section a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .doc-section a:hover {
+    text-decoration-color: var(--text);
+  }
+
+  .steps {
+    counter-reset: step;
+    margin-bottom: 24px;
+  }
+
+  .steps li {
+    padding-left: 48px;
+    margin-bottom: 22px;
+    counter-increment: step;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .steps li::after { display: none; }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0 28px;
+    max-width: 620px;
+  }
+
+  .card {
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+
+  .card strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .pullquote {
+    margin: 32px 0;
+    padding: 22px 28px;
+    max-width: 620px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  .pullquote cite {
+    display: block;
+    margin-top: 10px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 400;
+    font-style: normal;
+    color: var(--subtle);
+    letter-spacing: 0;
+  }
+
+  /* Table */
+  .table-wrap {
+    margin: 24px 0 28px;
+    max-width: 620px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  th {
+    text-align: left;
+    padding: 11px 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td:first-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Code */
+  .code-block {
+    margin: 20px 0 28px;
+    max-width: 620px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+  .code-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    padding: 10px 16px;
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  }
+
+  pre {
+    margin: 0;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.6;
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    color: var(--text);
+    background: var(--code-bg);
+  }
+
+  code {
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    font-size: 0.86em;
+    background: var(--code-bg);
+    padding: 2px 7px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .callout {
+    margin: 28px 0;
+    padding: 18px 20px 18px 52px;
+    max-width: 620px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--muted);
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+
+  .callout::before {
+    content: '!';
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--code-bg);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+  }
+
+  .callout strong { color: var(--text); font-weight: 500; }
+
+  .footer-text {
+    max-width: 620px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-links a {
+    color: var(--subtle);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover {
+    color: var(--text);
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--nav-h);
+    background: rgba(0, 0, 0, 0.18);
+    z-index: 80;
+  }
+
+  .overlay.open { display: block; }
+
+  @media (max-width: 1100px) {
+    .main { margin-right: 0; }
+  }
+
+  @media (max-width: 900px) {
+    .section-lead { margin-left: auto; margin-right: auto; }
+    .card-grid { grid-template-columns: 1fr; }
+    .doc-media { margin: 32px 0 0; padding-bottom: 40px; }
+    .doc-section { padding: 40px 0; }
+  }
+
+  @media (max-width: 768px) {
+    .nav { justify-content: center; padding: 0 56px; }
+    .menu-toggle { display: block; }
+    .nav-links .hide-mobile { display: none; }
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      z-index: 90;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      box-shadow: 8px 0 32px rgba(0, 0, 0, 0.06);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .main-inner { padding: 0 24px 72px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a href="../" class="nav-brand"><em>convert</em>file43</a>
+  <span class="version-tag" id="versionTag">…</span>
+  <div class="nav-links">
+    <a href="./" class="is-current">Docs</a>
+    <a href="../" class="hide-mobile">Home</a>
+    <a href="https://github.com/ufraaan/convertfile43">GitHub</a>
+    <a href="https://github.com/ufraaan/convertfile43/releases/latest">Download</a>
+  </div>
+</nav>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <p class="sidebar-intro">Copy, click, convert. The rest is in here.</p>
+    <div class="sidebar-group">
+      <div class="sidebar-label">Start</div>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#introduction">Introduction</a>
+        <a href="#installation">Installation</a>
+        <a href="#quick-start">Quick start</a>
+      </nav>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-label">Daily use</div>
+      <nav class="sidebar-nav">
+        <a href="#how-it-works">How it works</a>
+        <a href="#formats">Formats</a>
+        <a href="#progress">Progress &amp; ETA</a>
+        <a href="#settings">Settings</a>
+        <a href="#tips">Tips</a>
+      </nav>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-label">Build</div>
+      <nav class="sidebar-nav">
+        <a href="#architecture">Architecture</a>
+        <a href="#building">From source</a>
+        <a href="#testing">Testing</a>
+        <a href="#license">License</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-inner">
+      <figure class="doc-media">
+        <img src="../readme-hero.gif" alt="convertfile43 menu bar workflow" width="480" height="360">
+      </figure>
+
+      <section class="doc-section" id="introduction" data-section>
+        <p class="section-eyebrow">Overview</p>
+        <h2>Introduction</h2>
+        <p class="section-lead">
+          A file converter that respects the way you already work in Finder - copy, menu, done.
+        </p>
+        <p>
+          The app bundles the heavy CLI tools so you are not wiring up Homebrew paths before your first encode.
+          Video and audio run through <strong>ffmpeg</strong>, usually wrapped by <strong>ffconv</strong> for live percent and ETA.
+        </p>
+        <div class="card-grid">
+          <div class="card">
+            <strong>Clipboard-first</strong>
+            Copy files or pathnames; the menu refreshes twice a second.
+          </div>
+          <div class="card">
+            <strong>Batch-friendly</strong>
+            Queue many files; cap parallelism in Settings.
+          </div>
+          <div class="card">
+            <strong>Honest progress</strong>
+            Percent on the icon; ETA under the filename in the menu.
+          </div>
+          <div class="card">
+            <strong>Your presets</strong>
+            Built-ins plus custom output types and quality settings.
+          </div>
+        </div>
+        <blockquote class="pullquote">
+          No clicks spared.
+          <cite>- the whole point of the app</cite>
+        </blockquote>
+      </section>
+
+      <section class="doc-section" id="installation" data-section>
+        <p class="section-eyebrow">Setup</p>
+        <h2>Installation</h2>
+        <p class="section-lead">One DMG, one drag, one slightly cautious first open.</p>
+        <ol class="steps">
+          <li>Download the latest <code>.dmg</code> from the <a href="https://github.com/ufraaan/convertfile43/releases/latest">releases page</a>.</li>
+          <li>Open it and drag <strong>convertfile43</strong> into Applications.</li>
+          <li>Launch from Applications. Look for the swap icon in the menu bar.</li>
+        </ol>
+        <div class="callout">
+          <strong>Unsigned build.</strong> macOS may refuse the first launch. Right-click the app, choose <strong>Open</strong>, then confirm.
+        </div>
+      </section>
+
+      <section class="doc-section" id="quick-start" data-section>
+        <p class="section-eyebrow">Setup</p>
+        <h2>Quick start</h2>
+        <p class="section-lead">Thirty seconds from copy to converting.</p>
+        <ol class="steps">
+          <li>Select files in Finder. <strong>⌘C</strong> (or Copy as Pathname).</li>
+          <li>Click the convertfile43 menu bar icon.</li>
+          <li>Choose a preset under Audio, Video, Images, or Documents.</li>
+          <li>Find outputs beside the originals: <code>name_converted.ext</code>.</li>
+        </ol>
+        <p>Open <strong>Settings…</strong> (⌘,) for parallel jobs, sounds, and preset editing.</p>
+      </section>
+
+      <section class="doc-section" id="how-it-works" data-section>
+        <p class="section-eyebrow">Daily use</p>
+        <h2>How it works</h2>
+        <p class="section-lead">Three moving parts: clipboard, queue, engines.</p>
+        <h3>Clipboard</h3>
+        <p>
+          The menu watches the general pasteboard. Finder file URLs work; plain path text works too.
+          If presets stay greyed out, copy again and give the timer a moment.
+        </p>
+        <h3>Job queue</h3>
+        <p>
+          Jobs move through queued → running → completed (or failed / cancelled).
+          The orchestrator respects <code>maxParallelJobs</code>. Finished rows clear after a few seconds.
+        </p>
+        <h3>Engines</h3>
+        <p>
+          ffmpeg/ffconv for most AV. ImageMagick (and sometimes ffmpeg) for images.
+          LibreOffice for office → PDF when installed at <code>/Applications/LibreOffice.app</code>.
+        </p>
+      </section>
+
+      <section class="doc-section" id="formats" data-section>
+        <p class="section-eyebrow">Daily use</p>
+        <h2>Supported formats</h2>
+        <p class="section-lead">Built-in presets cover the usual paths; extend with your own.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Category</th><th>Output</th><th>Engine</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Audio</td><td>mp3, aac, flac, ogg, wav</td><td>ffmpeg via ffconv</td></tr>
+              <tr><td>Video</td><td>mp4, mkv, avi, webm, ogv, gif, mov</td><td>ffmpeg (VideoToolbox where available)</td></tr>
+              <tr><td>Image</td><td>jpg, png, webp, avif, ico, pdf, svg</td><td>ffmpeg / ImageMagick</td></tr>
+              <tr><td>Office</td><td>pdf</td><td>LibreOffice</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <strong>Office → PDF only.</strong> doc, docx, xls, ppt, odt, and friends need
+          <a href="https://www.libreoffice.org">LibreOffice</a> installed separately.
+        </div>
+      </section>
+
+      <section class="doc-section" id="progress" data-section>
+        <p class="section-eyebrow">Daily use</p>
+        <h2>Progress and ETA</h2>
+        <p class="section-lead">You should never stare at a fake zero on a real encode.</p>
+        <h3>Menu bar icon</h3>
+        <p>Running ffmpeg jobs show an integer percent, e.g. <code>42%</code>. Image/office jobs show <code>…</code> when percent is unknown.</p>
+        <h3>Dropdown menu</h3>
+        <p>Open the menu while a job runs:</p>
+        <ul>
+          <li>First line - truncated filename</li>
+          <li>Second line - <code>42% · 12m left</code> when speed is known</li>
+          <li><strong>Cancel</strong> - stops the job and child processes</li>
+        </ul>
+        <h3>ETA math</h3>
+        <p>
+          ffconv reads ffmpeg output and estimates wall-clock time from remaining media duration and
+          <code>speed=</code> (e.g. 2.5x). Large files may sit at 0% during probe - normal.
+        </p>
+        <h3>Logs</h3>
+        <p>
+          <strong>Logs → Open log file</strong> in the menu. Look for
+          <code>Progress 42.0% (eta: 720s)</code> lines during encodes.
+        </p>
+      </section>
+
+      <section class="doc-section" id="settings" data-section>
+        <p class="section-eyebrow">Daily use</p>
+        <h2>Settings and presets</h2>
+        <p class="section-lead">Standard macOS settings window - no hidden panel.</p>
+        <h3>General</h3>
+        <ul>
+          <li><strong>Parallel jobs</strong> - 1 through 8 simultaneous encodes</li>
+          <li><strong>Reveal in Finder on complete</strong></li>
+          <li><strong>Play sound on complete</strong></li>
+        </ul>
+        <h3>Presets</h3>
+        <p>Name, input extensions, output type, and optional quality, bitrate, scale, fps, and related fields.</p>
+      </section>
+
+      <section class="doc-section" id="tips" data-section>
+        <p class="section-eyebrow">Daily use</p>
+        <h2>Tips and troubleshooting</h2>
+        <p class="section-lead">When something sticks, start here.</p>
+        <h3>Cancel and quit</h3>
+        <p>Cancel under the active job. Quit warns if work is running and tears down ffconv/ffmpeg trees.</p>
+        <h3>Stuck at 0%</h3>
+        <p>Probe phase on big containers, or an old build without live ffconv progress. Check Logs after the run.</p>
+        <h3>Greyed-out presets</h3>
+        <p>No matching files on the clipboard. Copy supported inputs in Finder again.</p>
+      </section>
+
+      <section class="doc-section" id="architecture" data-section>
+        <p class="section-eyebrow">Build</p>
+        <h2>Architecture</h2>
+        <p class="section-lead">SwiftUI shell, Rust progress pipe, bundled CLIs.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Path</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td><code>FileConverter/App/</code></td><td>Entry, delegate, quit flow</td></tr>
+              <tr><td><code>FileConverter/Features/MenuBar/</code></td><td>Menu UI, clipboard poll</td></tr>
+              <tr><td><code>FileConverter/Features/Settings/</code></td><td>Presets and preferences</td></tr>
+              <tr><td><code>FileConverter/Features/Conversions/</code></td><td>Orchestrator</td></tr>
+              <tr><td><code>Middleware/rust-tool/</code></td><td>ffconv</td></tr>
+              <tr><td><code>Installer/</code></td><td>DMG packaging</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="doc-section" id="building" data-section>
+        <p class="section-eyebrow">Build</p>
+        <h2>Building from source</h2>
+        <p class="section-lead">Xcode, XcodeGen, Rust. Same toolchain as CI (macOS 26 / Xcode 26.5).</p>
+        <div class="code-block">
+          <div class="code-label">Terminal</div>
+          <pre>brew install xcodegen imagemagick
+cd /path/to/convertfile43
+xcodegen generate
+./Middleware/Scripts/download-binaries.sh
+bash Installer/generate-app-icon.sh
+xcodebuild -project convertfile43.xcodeproj -scheme convertfile43 \
+  -configuration Release -derivedDataPath ./Build \
+  -destination "generic/platform=macOS" build \
+  CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+  CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO</pre>
+        </div>
+        <h3>Local DMG</h3>
+        <div class="code-block">
+          <div class="code-label">Terminal</div>
+          <pre>APP="./Build/Build/Products/Release/convertfile43.app"
+bash Installer/build-dmg.sh "$APP" "0.1.7" "convertfile43-0.1.7.dmg"</pre>
+        </div>
+        <p>Run <code>bash Scripts/ci-local.sh</code> to mirror CI locally.</p>
+      </section>
+
+      <section class="doc-section" id="testing" data-section>
+        <p class="section-eyebrow">Build</p>
+        <h2>Testing</h2>
+        <p class="section-lead">Unit and integration tests via xcodebuild.</p>
+        <div class="code-block">
+          <div class="code-label">Terminal</div>
+          <pre>xcodebuild -project convertfile43.xcodeproj -scheme convertfile43 \
+  -configuration Debug -derivedDataPath ./Build \
+  -destination "platform=macOS" test \
+  CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+  CODE_SIGN_ENTITLEMENTS="" CODE_SIGNING_ALLOWED=NO</pre>
+        </div>
+      </section>
+
+      <section class="doc-section" id="license" data-section>
+        <p class="section-eyebrow">Build</p>
+        <h2>License</h2>
+        <p class="section-lead">Free and open source.</p>
+        <p>
+          <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL v3</a> -
+          <a href="https://github.com/ufraaan/convertfile43/blob/master/LICENSE">LICENSE</a> in the repo.
+          Built on <a href="https://ffmpeg.org">FFmpeg</a> and <a href="https://www.libreoffice.org">LibreOffice</a>.
+        </p>
+      </section>
+
+      <div class="footer-text">
+        Free &amp; open source &middot; macOS 14+
+        <span class="footer-links">
+          <a href="https://github.com/ufraaan/convertfile43">GitHub</a>
+          <a href="https://github.com/ufraaan/convertfile43/releases/latest">Download</a>
+        </span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  const sections = document.querySelectorAll('[data-section]');
+  const sidebarLinks = document.querySelectorAll('.sidebar-nav a[href^="#"]');
+
+  function setActive(id) {
+    sidebarLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+    });
+  }
+
+  function onScroll() {
+    var current = sections[0].id;
+    var scrollPos = window.scrollY + 120;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].offsetTop <= scrollPos) {
+        current = sections[i].id;
+      }
+    }
+    setActive(current);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+  document.getElementById('menuToggle')?.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+  overlay?.addEventListener('click', closeSidebar);
+  sidebarLinks.forEach((l) => l.addEventListener('click', closeSidebar));
+})();
+</script>
+<script>
+(function () {
+  var el = document.getElementById('versionTag');
+  if (!el) return;
+  fetch('../version.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data || !data.version) return;
+      el.textContent = data.version;
+      el.classList.add('loaded');
+    })
+    .catch(function () {});
+})();
+</script>
+</body>
+</html>
