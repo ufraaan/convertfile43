@@ -8,31 +8,31 @@ final class FFmpegServiceTests: XCTestCase {
     func test_buildArguments_mp3() {
         let settings = ConversionSettings(quality: nil, bitrate: "320k", sampleRate: 44100, channels: 2, scale: nil, fps: nil, encodingSpeed: nil)
         let args = FFmpegService.buildArguments(input: input, output: output, settings: settings, outputType: .mp3)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:a", "libmp3lame", "-b:a", "320k", "-ar", "44100", "-ac", "2", output])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:a", "libmp3lame", "-b:a", "320k", "-ar", "44100", "-ac", "2", output])
     }
 
     func test_buildArguments_mp4_withScale() {
         let settings = ConversionSettings(quality: nil, bitrate: nil, sampleRate: nil, channels: nil, scale: "1920:1080", fps: 30, encodingSpeed: "medium")
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.mp4", settings: settings, outputType: .mp4)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "-vf", "scale=1920:1080", "-r", "30", "/path/to/output.mp4"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "-vf", "scale=1920:1080", "-r", "30", "/path/to/output.mp4"])
     }
 
     func test_buildArguments_mp4_noSettings() {
         let settings = ConversionSettings()
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.mp4", settings: settings, outputType: .mp4)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "/path/to/output.mp4"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "/path/to/output.mp4"])
     }
 
     func test_buildArguments_aac() {
         let settings = ConversionSettings(quality: nil, bitrate: "256k", sampleRate: nil, channels: nil, scale: nil, fps: nil, encodingSpeed: nil)
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.aac", settings: settings, outputType: .aac)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:a", "aac", "-b:a", "256k", "/path/to/output.aac"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:a", "aac", "-b:a", "256k", "/path/to/output.aac"])
     }
 
     func test_buildArguments_flac() {
         let settings = ConversionSettings()
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.flac", settings: settings, outputType: .flac)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:a", "flac", "/path/to/output.flac"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:a", "flac", "/path/to/output.flac"])
     }
 
     func test_buildArguments_gif() {
@@ -44,13 +44,13 @@ final class FFmpegServiceTests: XCTestCase {
     func test_buildArguments_webm() {
         let settings = ConversionSettings(scale: "1280:720")
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.webm", settings: settings, outputType: .webm)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:v", "libvpx-vp9", "-codec:a", "libopus", "-vf", "scale=1280:720", "/path/to/output.webm"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:v", "libvpx-vp9", "-codec:a", "libopus", "-vf", "scale=1280:720", "/path/to/output.webm"])
     }
 
     func test_buildArguments_mkv() {
         let settings = ConversionSettings()
         let args = FFmpegService.buildArguments(input: input, output: "/path/to/output.mkv", settings: settings, outputType: .mkv)
-        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "/path/to/output.mkv"])
+        XCTAssertEqual(args, ["-i", input, "-y", "-nostdin", "-stats_period", "0.5", "-codec:v", "h264_videotoolbox", "-codec:a", "aac", "/path/to/output.mkv"])
     }
 
     func test_buildArguments_outputIsLast() {

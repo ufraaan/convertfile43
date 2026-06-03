@@ -10,12 +10,14 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      - name: Select Xcode 26.5
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+          xcodebuild -version
 
       - name: Generate Xcode project
         run: |
@@ -23,8 +25,17 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           xcodegen generate
 
+      - name: Install Rust
+        run: |
+          if ! command -v cargo &>/dev/null; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          fi
+          cargo --version
+
       - name: Install binary dependencies
         run: |
+          brew install imagemagick ghostscript potrace
           bash "$GITHUB_WORKSPACE/Middleware/Scripts/download-binaries.sh"
 
       - name: Build

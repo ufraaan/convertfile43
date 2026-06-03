@@ -188,6 +188,31 @@ final class FFmpegProgressParserTests: XCTestCase {
         XCTAssertEqual(result, -1)
     }
 
+    func test_estimatedSecondsRemaining_halfDoneAt2x() {
+        let stderr = """
+          Duration: 00:00:10.00
+        time=00:00:05.00 speed=2.0x
+        """
+        guard let eta = FFmpegProgressParser.estimatedSecondsRemaining(from: stderr) else {
+            XCTFail("Expected ETA")
+            return
+        }
+        XCTAssertEqual(eta, 2.5, accuracy: 0.01)
+    }
+
+    func test_snapshot_includesETA() {
+        let stderr = """
+          Duration: 00:01:00.00
+        time=00:00:30.00 speed=1.5x
+        """
+        guard let snap = FFmpegProgressParser.snapshot(from: stderr) else {
+            XCTFail("Expected snapshot")
+            return
+        }
+        XCTAssertEqual(snap.percent, 50, accuracy: 0.1)
+        XCTAssertEqual(snap.etaSeconds ?? 0, 20, accuracy: 0.5)
+    }
+
     func test_progress_realisticFfmpegOutput() {
         let stderr = """
         ffmpeg version n6.0
