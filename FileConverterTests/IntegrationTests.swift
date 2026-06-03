@@ -165,7 +165,10 @@ final class ProcessRunTests: XCTestCase {
     // MARK: - Live progress monitoring
 
     func test_progressMonitoring_withLongVideo_reportsMultipleSamples() async throws {
-        let fixture = URL(fileURLWithPath: "/Users/ufraan/Desktop/file-convert/FileConverter/Tests/Fixtures/test_5min_input.mp4")
+        let fixture = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Tests/Fixtures/test_5min_input.mp4")
         try XCTSkipUnless(FileManager.default.fileExists(atPath: fixture.path),
                           "5-minute test fixture not present at \(fixture.path) — skipping. Generate via Tests/Fixtures/generate.sh")
 
