@@ -20,8 +20,8 @@ converted files show up next to the originals. no windows, no drag-and-drop.
 
 while a job runs:
 
-- menu bar icon shows live progress
-- ffmpeg jobs can show an **eta** (e.g. `42% · 12m left`)
+- menu bar icon shows live percent (e.g. `42%`)
+- open the menu to see filename, percent, and **eta** (e.g. `12m left`) on the active job line
 - image/office jobs show “converting…” instead of a fake 0%
 
 open the menu to see the active filename, cancel, or recent results. settings (presets, parallel jobs, notifications) live in the standard macos settings window from the menu.
@@ -30,7 +30,7 @@ open the menu to see the active filename, cancel, or recent results. settings (p
 
 - menu bar only - no dock icon
 - batch conversion - copy many files, convert all at once
-- live progress and ffmpeg-based **eta** on the status item and in the menu
+- live percent on the menu bar icon; ffmpeg-based **eta** in the menu on the active job
 - “converting…” state for imagemagick and libreoffice (no fake 0%)
 - hardware-accelerated video via videotoolbox where supported
 - bundled ffmpeg, ffconv (rust progress wrapper), imagemagick, ghostscript, potrace
@@ -67,7 +67,7 @@ the app is unsigned. macos may block the first launch - right-click the app and 
 
 - **cancel** - use **cancel** under the active job in the menu while a conversion runs
 - **quit** - **quit convertfile43** warns if a conversion is active, stops ffconv/ffmpeg trees, then quits. if activity monitor still shows ffmpeg: search “ffmpeg”, select it, click **stop** → **force quit**. a second alert may remind you after quit
-- **eta** - based on ffmpeg `speed=` (e.g. 2.5x). shown as `12m left` next to percent when available
+- **eta** - based on ffmpeg `speed=` (e.g. 2.5x). shown under the active filename in the menu when available
 - **large files** - long encodes (e.g. 1.5 gb mp4 → mov) can take a long time; progress should update on the icon. cancel or quit instead of force-quitting from activity monitor
 - **logs** - `logs` → open log file / folder when a conversion fails
 

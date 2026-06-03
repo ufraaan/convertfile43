@@ -167,6 +167,10 @@ final class ConversionOrchestrator {
         let jobId = job.id
         let progressHandler: @Sendable (ConversionProgressSnapshot) -> Void = { [weak self] snapshot in
             guard snapshot.percent >= 0 else { return }
+            LoggerService.debug(
+                String(format: "Progress %.1f%% (eta: %@)", snapshot.percent, snapshot.etaSeconds.map { String(format: "%.0fs", $0) } ?? "—"),
+                component: "ConversionOrchestrator"
+            )
             Task { @MainActor in
                 guard let self,
                       let idx = self.jobs.firstIndex(where: { $0.id == jobId }) else { return }
@@ -260,29 +264,45 @@ final class ConversionOrchestrator {
                 stderrBuffer.data.append(handle.availableData)
             }
 
-            outHandle.readabilityHandler = { handle in
-                let data = handle.availableData
+            @Sendable func parseStdoutChunk(_ data: Data, flushRemainder: Bool = false) {
                 guard !data.isEmpty else { return }
                 buffer.value += String(data: data, encoding: .utf8) ?? ""
-                let lines = buffer.value.components(separatedBy: "\n")
-                buffer.value = lines.last ?? ""
-                for line in lines.dropLast() where !line.isEmpty {
+                var lines = buffer.value.components(separatedBy: "\n")
+                if flushRemainder {
+                    buffer.value = ""
+                } else {
+                    buffer.value = lines.last ?? ""
+                    lines = Array(lines.dropLast())
+                }
+                for line in lines where !line.isEmpty {
                     guard let jsonData = line.data(using: .utf8),
                           let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else { continue }
                     let type = json["type"] as? String
                     if type == "started", let ffmpegPID = json["ffmpeg_pid"] as? Int {
                         sharedProcessTracker.register(pid_t(ffmpegPID), for: jobId)
                     } else if type == "progress", let pct = json["percent"] as? Double {
-                        let eta = json["eta_seconds"] as? Double
-                        progressHandler(ConversionProgressSnapshot(percent: pct, etaSeconds: eta))
+                        var etaValue: TimeInterval?
+                        if let eta = json["eta_seconds"] as? Double, eta >= 1 {
+                            etaValue = eta
+                        }
+                        progressHandler(ConversionProgressSnapshot(percent: pct, etaSeconds: etaValue))
                     }
                 }
+            }
+
+            outHandle.readabilityHandler = { handle in
+                parseStdoutChunk(handle.availableData)
             }
 
             process.terminationHandler = { proc in
                 sharedProcessTracker.clear(jobId: jobId)
                 outHandle.readabilityHandler = nil
                 errHandle.readabilityHandler = nil
+                if let trailing = try? outHandle.readToEnd() {
+                    parseStdoutChunk(trailing, flushRemainder: true)
+                } else {
+                    parseStdoutChunk(Data(), flushRemainder: true)
+                }
                 try? outHandle.close()
                 try? errHandle.close()
 

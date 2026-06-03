@@ -60,9 +60,6 @@ extension ConversionJob {
         case .running where isIndeterminate:
             return "…"
         case .running:
-            if let eta = ETAFormatting.format(seconds: etaSecondsRemaining) {
-                return "\(Int(progress.rounded()))% · \(eta)"
-            }
             return "\(Int(progress.rounded()))%"
         default:
             return ""

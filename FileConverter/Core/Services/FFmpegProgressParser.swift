@@ -2,7 +2,7 @@ import Foundation
 
 enum FFmpegProgressParser {
     static func parseDuration(from stderr: String) -> TimeInterval? {
-        guard let regex = try? NSRegularExpression(pattern: #"Duration:\s*(\d{2}):(\d{2}):(\d{2})\.(\d{2})"#) else {
+        guard let regex = try? NSRegularExpression(pattern: #"Duration:\s*(\d{1,2}):(\d{2}):(\d{2})\.(\d{2,3})"#) else {
             return nil
         }
         let range = NSRange(stderr.startIndex..., in: stderr)
@@ -18,13 +18,15 @@ enum FFmpegProgressParser {
         let hours = Double(stderr[hoursRange]) ?? 0
         let minutes = Double(stderr[minutesRange]) ?? 0
         let seconds = Double(stderr[secondsRange]) ?? 0
-        let centi = Double(stderr[centiRange]) ?? 0
+        let frac = Double(stderr[centiRange]) ?? 0
+        let fracDigits = stderr[centiRange].count
+        let fracSeconds = frac / pow(10.0, Double(fracDigits))
 
-        return hours * 3600 + minutes * 60 + seconds + centi / 100.0
+        return hours * 3600 + minutes * 60 + seconds + fracSeconds
     }
 
     static func parseTime(from stderr: String) -> TimeInterval? {
-        guard let regex = try? NSRegularExpression(pattern: #"time=\s*(\d{2}):(\d{2}):(\d{2})\.(\d{2})"#) else {
+        guard let regex = try? NSRegularExpression(pattern: #"time=\s*(\d{1,2}):(\d{2}):(\d{2})\.(\d{2,3})"#) else {
             return nil
         }
         let range = NSRange(stderr.startIndex..., in: stderr)
@@ -45,9 +47,11 @@ enum FFmpegProgressParser {
         let hours = Double(stderr[hoursRange]) ?? 0
         let minutes = Double(stderr[minutesRange]) ?? 0
         let seconds = Double(stderr[secondsRange]) ?? 0
-        let centi = Double(stderr[centiRange]) ?? 0
+        let frac = Double(stderr[centiRange]) ?? 0
+        let fracDigits = stderr[centiRange].count
+        let fracSeconds = frac / pow(10.0, Double(fracDigits))
 
-        return hours * 3600 + minutes * 60 + seconds + centi / 100.0
+        return hours * 3600 + minutes * 60 + seconds + fracSeconds
     }
 
     static func parseSpeed(from stderr: String) -> Double? {

@@ -105,8 +105,15 @@ struct MenuBarContent: View {
     private var activeJobSection: some View {
         if let running = orchestrator.jobs.first(where: { $0.state == .running }) {
             Divider()
-            Text(running.activeMenuLine)
-                .font(.caption)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(running.fileName.truncatedWithExtension(maxLength: 44))
+                    .font(.system(size: 13))
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                running.activeProgressRow
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 2)
             Button {
                 orchestrator.cancelJob(id: running.id)
             } label: {
@@ -270,15 +277,23 @@ extension ConversionJob {
         }
     }
 
-    var activeMenuLine: String {
-        let truncated = fileName.truncatedWithExtension(maxLength: 40)
+    @ViewBuilder
+    var activeProgressRow: some View {
         if isIndeterminate {
-            return "\(truncated) — Converting…"
+            Text("Converting…")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+        } else {
+            HStack(spacing: 6) {
+                Text("\(Int(progress.rounded()))%")
+                if let eta = ETAFormatting.format(seconds: etaSecondsRemaining) {
+                    Text("·")
+                    Text(eta)
+                }
+            }
+            .font(.system(size: 11, design: .monospaced))
+            .foregroundStyle(.secondary)
         }
-        if let eta = ETAFormatting.format(seconds: etaSecondsRemaining) {
-            return "\(truncated) — \(Int(progress.rounded()))% (\(eta))"
-        }
-        return "\(truncated) — \(Int(progress.rounded()))%"
     }
 }
 

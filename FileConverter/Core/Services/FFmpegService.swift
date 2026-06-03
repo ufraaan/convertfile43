@@ -8,6 +8,11 @@ enum FFmpegService {
 
         args.append("-nostdin")
 
+        if outputType.category == .audio || outputType.category == .video {
+            args.append("-stats_period")
+            args.append("0.5")
+        }
+
         switch outputType {
         case .mp3:
             args.append(contentsOf: ["-codec:a", "libmp3lame"])

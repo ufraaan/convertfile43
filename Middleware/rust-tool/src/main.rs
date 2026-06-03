@@ -1,6 +1,10 @@
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufReader, Read, Write};
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
-use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
 
 #[cfg(unix)]
 static FFMPEG_CHILD_PID: AtomicI32 = AtomicI32::new(0);
@@ -16,7 +20,10 @@ fn main() {
         }
     };
 
-    let ffmpeg_args = build_ffmpeg_args(&args);
+    let progress_file = std::env::temp_dir().join(format!("ffconv-{}.progress", std::process::id()));
+    let _ = std::fs::remove_file(&progress_file);
+
+    let ffmpeg_args = build_ffmpeg_args(&args, Some(&progress_file));
     let mut child = match Command::new(&args.ffmpeg)
         .args(&ffmpeg_args)
         .stdout(Stdio::null())
@@ -27,7 +34,7 @@ fn main() {
         Err(e) => {
             let msg = format!("failed to spawn ffmpeg: {e}");
             eprintln!("{msg}");
-            println!("{{\"type\":\"error\",\"message\":\"{msg}\"}}");
+            emit_json(&serde_json::json!({"type": "error", "message": msg}));
             std::process::exit(1);
         }
     };
@@ -36,68 +43,91 @@ fn main() {
     FFMPEG_CHILD_PID.store(child.id() as i32, Ordering::SeqCst);
 
     let ffmpeg_pid = child.id();
-    println!(
-        "{{\"type\":\"started\",\"ffmpeg_pid\":{}}}",
-        ffmpeg_pid
-    );
-    let _ = std::io::stdout().flush();
+    emit_json(&serde_json::json!({
+        "type": "started",
+        "ffmpeg_pid": ffmpeg_pid
+    }));
 
-    let stderr = child.stderr.take().expect("no stderr");
-    let reader = BufReader::new(stderr);
-    let mut duration: Option<f64> = None;
-    let mut ffmpeg_stderr: Vec<String> = Vec::new();
+    let duration: Arc<Mutex<Option<f64>>> = Arc::new(Mutex::new(None));
+    let poll_running = Arc::new(AtomicBool::new(true));
+    let last_percent: Arc<Mutex<f64>> = Arc::new(Mutex::new(-1.0));
 
-    for line in reader.lines() {
-        let line = match line {
-            Ok(l) => l,
-            Err(_) => break,
-        };
-
-        ffmpeg_stderr.push(line.clone());
-
-        if duration.is_none() {
-            if let Some(d) = parse_duration(&line) {
-                duration = Some(d);
-            }
-        }
-
-        if let Some(time) = parse_time(&line) {
-            if let Some(dur) = duration {
-                if dur > 0.0 {
-                    let pct = ((time / dur) * 100.0 * 10.0).round() / 10.0;
-                    let speed = parse_speed(&line).unwrap_or(0.0);
-                    let remaining = (dur - time).max(0.0);
-                    let eta_seconds = if speed > 0.01 {
-                        remaining / speed
-                    } else {
-                        0.0
-                    };
-                    let json = serde_json::json!({
-                        "type": "progress",
-                        "percent": pct,
-                        "eta_seconds": eta_seconds,
-                        "time": format_time(time),
-                        "speed": format!("{speed:.1}x"),
-                    });
-                    println!("{json}");
-                    let _ = std::io::stdout().flush();
+    let poll_duration = duration.clone();
+    let poll_last = last_percent.clone();
+    let poll_path = progress_file.clone();
+    let poll_flag = poll_running.clone();
+    let poll_thread = thread::spawn(move || {
+        while poll_flag.load(Ordering::Relaxed) {
+            if let Ok(text) = std::fs::read_to_string(&poll_path) {
+                let dur = *poll_duration.lock().unwrap();
+                if let Some(event) = progress_from_progress_file(&text, dur) {
+                    emit_progress_if_changed(&event, &poll_last);
                 }
             }
+            thread::sleep(Duration::from_millis(250));
+        }
+    });
+
+    let stderr = child.stderr.take().expect("no stderr");
+    let mut reader = BufReader::new(stderr);
+    let mut pending = String::new();
+    let mut buf = [0u8; 8192];
+    let mut ffmpeg_stderr: Vec<String> = Vec::new();
+
+    loop {
+        let n = match reader.read(&mut buf) {
+            Ok(0) => break,
+            Ok(n) => n,
+            Err(_) => break,
+        };
+        pending.push_str(&String::from_utf8_lossy(&buf[..n]));
+        drain_stderr_lines(&mut pending, |line| {
+            ffmpeg_stderr.push(line.to_string());
+
+            let mut dur_guard = duration.lock().unwrap();
+            if dur_guard.is_none() {
+                if let Some(d) = parse_duration(line) {
+                    *dur_guard = Some(d);
+                }
+            }
+            let dur = *dur_guard;
+
+            if let Some(event) = progress_from_stderr_line(line, dur) {
+                emit_progress_if_changed(&event, &last_percent);
+            }
+        });
+    }
+
+    if !pending.trim().is_empty() {
+        let line = pending.trim();
+        ffmpeg_stderr.push(line.to_string());
+        let mut dur_guard = duration.lock().unwrap();
+        if dur_guard.is_none() {
+            if let Some(d) = parse_duration(line) {
+                *dur_guard = Some(d);
+            }
+        }
+        if let Some(event) = progress_from_stderr_line(line, *dur_guard) {
+            emit_progress_if_changed(&event, &last_percent);
         }
     }
+
+    poll_running.store(false, Ordering::Relaxed);
+    let _ = poll_thread.join();
+    let _ = std::fs::remove_file(&progress_file);
 
     let status = match child.wait() {
         Ok(s) => s,
         Err(e) => {
             let msg = format!("failed to wait for ffmpeg: {e}");
             eprintln!("{msg}");
-            println!("{{\"type\":\"error\",\"message\":\"{msg}\"}}");
+            emit_json(&serde_json::json!({"type": "error", "message": msg}));
             std::process::exit(1);
         }
     };
 
     if status.success() {
-        println!("{{\"type\":\"done\"}}");
+        emit_json(&serde_json::json!({"type": "done"}));
     } else {
         let code = status.code().unwrap_or(-1);
         let detail = ffmpeg_stderr
@@ -108,9 +138,131 @@ fn main() {
             .collect::<Vec<_>>()
             .join(" | ");
         eprintln!("ffmpeg exited with code {code}: {detail}");
-        println!("{{\"type\":\"error\",\"message\":\"ffmpeg exited with code {code}: {detail}\"}}");
+        emit_json(&serde_json::json!({
+            "type": "error",
+            "message": format!("ffmpeg exited with code {code}: {detail}")
+        }));
         std::process::exit(code);
     }
+}
+
+struct ProgressEvent {
+    percent: f64,
+    eta_seconds: f64,
+    time: String,
+    speed: String,
+}
+
+fn emit_json(value: &serde_json::Value) {
+    println!("{value}");
+    let _ = std::io::stdout().flush();
+}
+
+fn emit_progress_if_changed(event: &ProgressEvent, last_percent: &Mutex<f64>) {
+    let mut last = last_percent.lock().unwrap();
+    if (event.percent - *last).abs() < 0.05 && *last >= 0.0 {
+        return;
+    }
+    *last = event.percent;
+    emit_json(&serde_json::json!({
+        "type": "progress",
+        "percent": event.percent,
+        "eta_seconds": event.eta_seconds,
+        "time": event.time,
+        "speed": event.speed,
+    }));
+}
+
+fn drain_stderr_lines(pending: &mut String, mut on_line: impl FnMut(&str)) {
+    loop {
+        let split_at = pending.find('\n').or_else(|| pending.find('\r'));
+        let Some(idx) = split_at else {
+            break;
+        };
+        let line = pending[..idx].trim().to_string();
+        pending.drain(..=idx);
+        if !line.is_empty() {
+            on_line(&line);
+        }
+    }
+}
+
+fn progress_from_stderr_line(line: &str, duration: Option<f64>) -> Option<ProgressEvent> {
+    let dur = duration?;
+    if dur <= 0.0 {
+        return None;
+    }
+    let time = parse_time(line)?;
+    let pct = ((time / dur) * 100.0 * 10.0).round() / 10.0;
+    let speed = parse_speed(line).unwrap_or(0.0);
+    let remaining = (dur - time).max(0.0);
+    let eta_seconds = if speed > 0.01 { remaining / speed } else { 0.0 };
+    Some(ProgressEvent {
+        percent: pct,
+        eta_seconds,
+        time: format_time(time),
+        speed: format!("{speed:.1}x"),
+    })
+}
+
+fn progress_from_progress_file(content: &str, duration: Option<f64>) -> Option<ProgressEvent> {
+    let dur = duration?;
+    if dur <= 0.0 {
+        return None;
+    }
+
+    let mut out_time_ms: Option<f64> = None;
+    let mut speed: Option<f64> = None;
+    let mut progress_state: Option<String> = None;
+
+    for line in content.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        let Some((key, value)) = line.split_once('=') else {
+            continue;
+        };
+        match key {
+            "out_time_ms" => out_time_ms = value.parse().ok(),
+            "speed" => speed = parse_speed_token(value),
+            "progress" => progress_state = Some(value.to_string()),
+            _ => {}
+        }
+    }
+
+    if progress_state.as_deref() == Some("end") {
+        return None;
+    }
+
+    let out_ms = out_time_ms?;
+    let dur_ms = dur * 1000.0;
+    if dur_ms <= 0.0 {
+        return None;
+    }
+
+    let pct = ((out_ms / dur_ms) * 100.0 * 10.0).round() / 10.0;
+    let time_secs = out_ms / 1000.0;
+    let speed_val = speed.unwrap_or(0.0);
+    let remaining = (dur - time_secs).max(0.0);
+    let eta_seconds = if speed_val > 0.01 {
+        remaining / speed_val
+    } else {
+        0.0
+    };
+
+    Some(ProgressEvent {
+        percent: pct.min(100.0),
+        eta_seconds,
+        time: format_time(time_secs),
+        speed: format!("{speed_val:.1}x"),
+    })
+}
+
+fn parse_speed_token(value: &str) -> Option<f64> {
+    let trimmed = value.trim();
+    let numeric = trimmed.trim_end_matches('x').trim();
+    numeric.parse().ok()
 }
 
 struct Args {
@@ -219,13 +371,29 @@ options:
     })
 }
 
-fn build_ffmpeg_args(args: &Args) -> Vec<String> {
+fn uses_progress_streaming(output_type: &str) -> bool {
+    matches!(
+        output_type,
+        "mp3" | "aac" | "flac" | "ogg" | "wav" | "mp4" | "mkv" | "avi" | "webm" | "ogv" | "gif"
+    )
+}
+
+fn build_ffmpeg_args(args: &Args, progress_file: Option<&PathBuf>) -> Vec<String> {
     let mut cmd: Vec<String> = Vec::new();
 
     cmd.push("-i".to_string());
     cmd.push(args.input.clone());
     cmd.push("-y".to_string());
     cmd.push("-nostdin".to_string());
+
+    if uses_progress_streaming(&args.output_type) {
+        cmd.push("-stats_period".to_string());
+        cmd.push("0.5".to_string());
+        if let Some(path) = progress_file {
+            cmd.push("-progress".to_string());
+            cmd.push(path.to_string_lossy().into_owned());
+        }
+    }
 
     match args.output_type.as_str() {
         "mp3" => {
@@ -244,7 +412,7 @@ fn build_ffmpeg_args(args: &Args) -> Vec<String> {
             cmd.extend(["-codec:a".into(), "flac".into()]);
         }
         "ogg" => {
-            cmd.extend(["-codec:a".into(), "vorbis".into()]);
+            cmd.extend(["-codec:a".into(), "libvorbis".into()]);
             if let Some(ref b) = args.bitrate {
                 cmd.extend(["-b:a".into(), b.clone()]);
             }
@@ -269,8 +437,7 @@ fn build_ffmpeg_args(args: &Args) -> Vec<String> {
                 cmd.extend(["-vf".into(), format!("scale={s}")]);
             }
         }
-        "ogv" => {
-        }
+        "ogv" => {}
         "gif" => {
             let fps = args.fps.unwrap_or(15);
             let scale = args.scale.as_deref().unwrap_or("800:-1");
@@ -353,33 +520,32 @@ fn build_ffmpeg_args(args: &Args) -> Vec<String> {
     cmd
 }
 
+fn parse_hms_fractional(caps: regex::Captures<'_>) -> Option<f64> {
+    let h: f64 = caps.get(1)?.as_str().parse().ok()?;
+    let m: f64 = caps.get(2)?.as_str().parse().ok()?;
+    let s: f64 = caps.get(3)?.as_str().parse().ok()?;
+    let frac_str = caps.get(4)?.as_str();
+    let frac: f64 = frac_str.parse().ok()?;
+    let frac_seconds = frac / 10f64.powi(frac_str.len() as i32);
+    Some(h * 3600.0 + m * 60.0 + s + frac_seconds)
+}
+
 fn parse_duration(line: &str) -> Option<f64> {
-    let re = regex::Regex::new(r"Duration:\s*(\d{2}):(\d{2}):(\d{2})\.(\d{2})").ok()?;
+    let re = regex::Regex::new(r"Duration:\s*(\d{1,2}):(\d{2}):(\d{2})\.(\d{2,3})").ok()?;
     let caps = re.captures(line)?;
-    let h: f64 = caps[1].parse().ok()?;
-    let m: f64 = caps[2].parse().ok()?;
-    let s: f64 = caps[3].parse().ok()?;
-    let c: f64 = caps[4].parse().ok()?;
-    Some(h * 3600.0 + m * 60.0 + s + c / 100.0)
+    parse_hms_fractional(caps)
 }
 
 fn parse_time(line: &str) -> Option<f64> {
-    let re = regex::Regex::new(r"time=\s*(\d{2}):(\d{2}):(\d{2})\.(\d{2})").ok()?;
-    if let Some(caps) = re.captures(line) {
-        let h: f64 = caps[1].parse().ok()?;
-        let m: f64 = caps[2].parse().ok()?;
-        let s: f64 = caps[3].parse().ok()?;
-        let c: f64 = caps[4].parse().ok()?;
-        Some(h * 3600.0 + m * 60.0 + s + c / 100.0)
-    } else {
-        None
-    }
+    let re = regex::Regex::new(r"time=\s*(\d{1,2}):(\d{2}):(\d{2})\.(\d{2,3})").ok()?;
+    let caps = re.captures(line)?;
+    parse_hms_fractional(caps)
 }
 
 fn parse_speed(line: &str) -> Option<f64> {
     let re = regex::Regex::new(r"speed=\s*(\d+\.?\d*)x").ok()?;
     let caps = re.captures(line)?;
-    caps[1].parse().ok()
+    caps.get(1)?.as_str().parse().ok()
 }
 
 fn format_time(secs: f64) -> String {
