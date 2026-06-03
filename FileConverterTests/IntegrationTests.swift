@@ -110,56 +110,12 @@ final class ProcessRunTests: XCTestCase {
     }
 
     private nonisolated func runProcess(executable: String, arguments: [String]) async throws -> String {
-        let stdoutURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-stdout-\(UUID().uuidString).log")
-        let stderrURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-stderr-\(UUID().uuidString).log")
-        FileManager.default.createFile(atPath: stdoutURL.path, contents: nil)
-        FileManager.default.createFile(atPath: stderrURL.path, contents: nil)
-
-        defer {
-            try? FileManager.default.removeItem(at: stdoutURL)
-            try? FileManager.default.removeItem(at: stderrURL)
-        }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: executable)
-            process.arguments = arguments
-
-            let stdoutHandle: FileHandle
-            let stderrHandle: FileHandle
-            do {
-                stdoutHandle = try FileHandle(forWritingTo: stdoutURL)
-                stderrHandle = try FileHandle(forWritingTo: stderrURL)
-            } catch {
-                continuation.resume(throwing: error)
-                return
-            }
-
-            process.standardOutput = stdoutHandle
-            process.standardError = stderrHandle
-            process.standardInput = FileHandle.nullDevice
-
-            process.terminationHandler = { proc in
-                try? stdoutHandle.close()
-                try? stderrHandle.close()
-                let stdout = (try? String(contentsOf: stdoutURL, encoding: .utf8)) ?? ""
-                let stderr = (try? String(contentsOf: stderrURL, encoding: .utf8)) ?? ""
-
-                LoggerService.info("terminationHandler: pid=\(proc.processIdentifier) status=\(proc.terminationStatus) stdout=\(stdout.count)B stderr=\(stderr.count)B", component: "Test")
-
-                guard proc.terminationStatus == 0 else {
-                    continuation.resume(throwing: ConversionError.processFailed(exitCode: proc.terminationStatus, stderr: stderr))
-                    return
-                }
-                continuation.resume(returning: stdout)
-            }
-
-            do {
-                try process.run()
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
+        let result = try await SubprocessRunner.run(
+            executable: executable,
+            arguments: arguments,
+            parseFFmpegProgress: false
+        )
+        return result.stdout
     }
 
     // MARK: - Live progress monitoring
@@ -179,19 +135,18 @@ final class ProcessRunTests: XCTestCase {
         }
 
         let samples = ProgressCollector()
-        let handler: @Sendable (Double) -> Void = { pct in
-            samples.append(pct)
+        let handler: @Sendable (ConversionProgressSnapshot) -> Void = { snapshot in
+            samples.append(snapshot.percent)
         }
 
-        _ = try await runProcessWithProgress(
+        _ = try await SubprocessRunner.run(
             executable: ffmpegPath,
             arguments: [
                 "-i", fixture.path, "-y", "-nostdin",
                 "-codec:v", "h264_videotoolbox", "-codec:a", "aac",
                 outputURL.path
             ],
-            progressHandler: handler,
-            pollIntervalMs: 500
+            onProgress: handler
         )
 
         let collected = samples.copy()
@@ -221,14 +176,16 @@ final class ProcessRunTests: XCTestCase {
         ]
         try await runProcess(executable: ffmpegPath, arguments: genArgs)
 
-        let (_, stderr) = try await runProcessCapturingAll(
+        let result = try await SubprocessRunner.run(
             executable: ffmpegPath,
             arguments: [
                 "-i", inputURL.path, "-y", "-nostdin",
                 "-codec:v", "libx264", "-codec:a", "aac",
                 outputURL.path
-            ]
+            ],
+            parseFFmpegProgress: false
         )
+        let stderr = result.stderr
 
         let progress = FFmpegProgressParser.progress(from: stderr)
         XCTAssertGreaterThan(progress, 90, "Expected progress > 90% for a 10s conversion, got \(progress). stderr tail: \(stderr.suffix(300))")
@@ -252,149 +209,3 @@ private final class ProgressCollector: @unchecked Sendable {
     }
 }
 
-extension ProcessRunTests {
-    fileprivate func runProcessWithProgress(
-        executable: String,
-        arguments: [String],
-        progressHandler: @Sendable @escaping (Double) -> Void,
-        pollIntervalMs: Int = 500
-    ) async throws -> String {
-        let stdoutURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-p-out-\(UUID().uuidString).log")
-        let stderrURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-p-err-\(UUID().uuidString).log")
-        FileManager.default.createFile(atPath: stdoutURL.path, contents: nil)
-        FileManager.default.createFile(atPath: stderrURL.path, contents: nil)
-
-        defer {
-            try? FileManager.default.removeItem(at: stdoutURL)
-            try? FileManager.default.removeItem(at: stderrURL)
-        }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: executable)
-            process.arguments = arguments
-
-            let stdoutHandle: FileHandle
-            let stderrHandle: FileHandle
-            do {
-                stdoutHandle = try FileHandle(forWritingTo: stdoutURL)
-                stderrHandle = try FileHandle(forWritingTo: stderrURL)
-            } catch {
-                continuation.resume(throwing: error)
-                return
-            }
-
-            process.standardOutput = stdoutHandle
-            process.standardError = stderrHandle
-            process.standardInput = FileHandle.nullDevice
-
-            let monitorBox = TestMonitorTaskBox()
-
-            process.terminationHandler = { proc in
-                monitorBox.task?.cancel()
-                try? stdoutHandle.close()
-                try? stderrHandle.close()
-                let stdout = (try? String(contentsOf: stdoutURL, encoding: .utf8)) ?? ""
-                let stderr = (try? String(contentsOf: stderrURL, encoding: .utf8)) ?? ""
-                guard proc.terminationStatus == 0 else {
-                    continuation.resume(throwing: ConversionError.processFailed(exitCode: proc.terminationStatus, stderr: stderr))
-                    return
-                }
-                continuation.resume(returning: stdout)
-            }
-
-            do {
-                try process.run()
-            } catch {
-                continuation.resume(throwing: error)
-                return
-            }
-
-            let stderrForMonitor = stderrURL
-            let monitorTask = Task.detached(priority: .utility) {
-                guard let readHandle = try? FileHandle(forReadingFrom: stderrForMonitor) else {
-                    return
-                }
-                defer { try? readHandle.close() }
-
-                while !Task.isCancelled {
-                    try? await Task.sleep(for: .milliseconds(pollIntervalMs))
-                    if Task.isCancelled { break }
-                    do {
-                        try readHandle.seek(toOffset: 0)
-                        let data = try readHandle.readToEnd() ?? Data()
-                        if !data.isEmpty,
-                           let text = String(data: data, encoding: .utf8) {
-                            let pct = FFmpegProgressParser.progress(from: text)
-                            if pct >= 0 {
-                                progressHandler(pct)
-                            }
-                        }
-                    } catch {
-                        return
-                    }
-                }
-            }
-            monitorBox.task = monitorTask
-        }
-    }
-}
-
-private final class TestMonitorTaskBox: @unchecked Sendable {
-    var task: Task<Void, Never>?
-}
-
-extension ProcessRunTests {
-    fileprivate func runProcessCapturingAll(
-        executable: String,
-        arguments: [String]
-    ) async throws -> (stdout: String, stderr: String) {
-        let stdoutURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-c-stdout-\(UUID().uuidString).log")
-        let stderrURL = FileManager.default.temporaryDirectory.appendingPathComponent("test-c-stderr-\(UUID().uuidString).log")
-        FileManager.default.createFile(atPath: stdoutURL.path, contents: nil)
-        FileManager.default.createFile(atPath: stderrURL.path, contents: nil)
-
-        defer {
-            try? FileManager.default.removeItem(at: stdoutURL)
-            try? FileManager.default.removeItem(at: stderrURL)
-        }
-
-        return try await withCheckedThrowingContinuation { continuation in
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: executable)
-            process.arguments = arguments
-
-            let stdoutHandle: FileHandle
-            let stderrHandle: FileHandle
-            do {
-                stdoutHandle = try FileHandle(forWritingTo: stdoutURL)
-                stderrHandle = try FileHandle(forWritingTo: stderrURL)
-            } catch {
-                continuation.resume(throwing: error)
-                return
-            }
-
-            process.standardOutput = stdoutHandle
-            process.standardError = stderrHandle
-            process.standardInput = FileHandle.nullDevice
-
-            process.terminationHandler = { proc in
-                try? stdoutHandle.close()
-                try? stderrHandle.close()
-                let stdout = (try? String(contentsOf: stdoutURL, encoding: .utf8)) ?? ""
-                let stderr = (try? String(contentsOf: stderrURL, encoding: .utf8)) ?? ""
-                guard proc.terminationStatus == 0 else {
-                    continuation.resume(throwing: ConversionError.processFailed(exitCode: proc.terminationStatus, stderr: stderr))
-                    return
-                }
-                continuation.resume(returning: (stdout, stderr))
-            }
-
-            do {
-                try process.run()
-            } catch {
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-}

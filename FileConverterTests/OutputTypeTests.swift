@@ -4,7 +4,7 @@ import XCTest
 final class OutputTypeTests: XCTestCase {
     func test_allCases_areCovered() {
         let all = OutputType.allCases
-        XCTAssertEqual(all.count, 17)
+        XCTAssertEqual(all.count, 18)
     }
 
     func test_category_audio() {
@@ -22,7 +22,7 @@ final class OutputTypeTests: XCTestCase {
     }
 
     func test_category_image() {
-        let imageTypes: [OutputType] = [.avif, .gif, .ico, .jpg, .png, .webp]
+        let imageTypes: [OutputType] = [.avif, .gif, .ico, .jpg, .png, .svg, .webp]
         for type in imageTypes {
             XCTAssertEqual(type.category, .image, "\(type) should be .image")
         }
@@ -38,6 +38,7 @@ final class OutputTypeTests: XCTestCase {
         XCTAssertEqual(OutputType.mp3.fileExtension, "mp3")
         XCTAssertEqual(OutputType.png.fileExtension, "png")
         XCTAssertEqual(OutputType.pdf.fileExtension, "pdf")
+        XCTAssertEqual(OutputType.svg.fileExtension, "svg")
     }
 
     func test_fileExtension_matchesRawValue_forMost() {

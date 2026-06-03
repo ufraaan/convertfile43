@@ -4,7 +4,7 @@ import XCTest
 final class ConversionPresetTests: XCTestCase {
     func test_defaultPresets_count() {
         let presets = ConversionPreset.defaultPresets
-        XCTAssertEqual(presets.count, 13)
+        XCTAssertEqual(presets.count, 14)
     }
 
     func test_defaultPresets_allAreBuiltIn() {
@@ -53,10 +53,16 @@ final class ConversionPresetTests: XCTestCase {
         XCTAssertEqual(mp3?.settings.bitrate, "320k")
     }
 
-    func test_mp4Preset_hasCorrectScale() {
-        let mp41080 = ConversionPreset.defaultPresets.first { $0.name == "MP4 1080p" }
-        XCTAssertNotNil(mp41080)
-        XCTAssertEqual(mp41080?.settings.scale, "1920:1080")
+    func test_mp4Preset_hasNoScale() {
+        let mp4 = ConversionPreset.defaultPresets.first { $0.name == "MP4" }
+        XCTAssertNotNil(mp4)
+        XCTAssertNil(mp4?.settings.scale)
+    }
+
+    func test_aviPreset_exists() {
+        let avi = ConversionPreset.defaultPresets.first { $0.name == "AVI" }
+        XCTAssertNotNil(avi)
+        XCTAssertEqual(avi?.outputType, .avi)
     }
 
     func test_jpegPreset_hasCorrectQuality() {
