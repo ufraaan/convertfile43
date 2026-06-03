@@ -10,8 +10,25 @@ DMG_OUTPUT="$3"
 STAGING=$(mktemp -d)
 DMG_TEMP=$(mktemp).dmg
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+if [ ! -f "$REPO_ROOT/Installer/app-icon.icns" ]; then
+  echo "=== Generating app icon (first run) ==="
+  bash "$SCRIPT_DIR/generate-app-icon.sh"
+fi
+
 echo "=== Setting up staging ==="
 cp -R "$APP_PATH" "$STAGING/convertfile43.app"
+
+if [ -f "$REPO_ROOT/Installer/app-icon.icns" ]; then
+  mkdir -p "$STAGING/convertfile43.app/Contents/Resources"
+  cp "$REPO_ROOT/Installer/app-icon.icns" "$STAGING/convertfile43.app/Contents/Resources/AppIcon.icns"
+  # Custom icon flag for Finder (.app in DMG window)
+  if command -v fileicon >/dev/null 2>&1; then
+    fileicon set "$STAGING/convertfile43.app" "$REPO_ROOT/Installer/app-icon.icns" || true
+  fi
+fi
 ln -s /Applications "$STAGING/Applications"
 mkdir "$STAGING/.background"
 cp Installer/dmg-bg.png "$STAGING/.background/"
