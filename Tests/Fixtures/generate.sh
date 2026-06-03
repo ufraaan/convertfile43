@@ -7,7 +7,7 @@ set -euo pipefail
 
 FIXTURE_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT="$FIXTURE_DIR/test_5min_input.mp4"
-FFMPEG="${1:-/Users/ufraan/Desktop/file-convert/FileConverter/Build/Build/Products/Debug/convertfile43.app/Contents/Resources/ffmpeg}"
+FFMPEG="${1:-ffmpeg}"
 
 if [ ! -x "$FFMPEG" ]; then
     echo "ffmpeg not found at: $FFMPEG"
