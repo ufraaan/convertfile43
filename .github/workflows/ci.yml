@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master, main]
+  push:
+    branches: [master, main]
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Install Rust
+        run: |
+          if ! command -v cargo &>/dev/null; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          fi
+
+      - name: Install binary dependencies
+        run: |
+          brew install imagemagick ghostscript potrace
+          bash Middleware/Scripts/download-binaries.sh
+
+      - name: Generate app icon
+        run: bash Installer/generate-app-icon.sh
+
+      - name: Build Debug
+        run: |
+          xcodebuild -project convertfile43.xcodeproj \
+            -scheme convertfile43 \
+            -configuration Debug \
+            -derivedDataPath Build \
+            -destination "generic/platform=macOS" \
+            build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Test
+        run: |
+          xcodebuild -project convertfile43.xcodeproj \
+            -scheme convertfile43 \
+            -configuration Debug \
+            -derivedDataPath Build \
+            -destination "platform=macOS" \
+            test \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGNING_ALLOWED=NO
