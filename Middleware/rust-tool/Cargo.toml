@@ -1,0 +1,11 @@
+[package]
+name = "ffconv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde_json = "1"
+regex = "1"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
