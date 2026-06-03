@@ -15,14 +15,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         isShuttingDown = true
         LoggerService.info("Quit requested — stopping conversion subprocesses", component: "AppDelegate")
 
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task { @MainActor in
             let orphansRemain = ConversionOrchestrator.shutdownForQuit()
-            DispatchQueue.main.async {
-                if orphansRemain {
-                    QuitConfirmation.showOrphanFFmpegReminder()
-                }
-                sender.reply(toApplicationShouldTerminate: true)
+            if orphansRemain {
+                QuitConfirmation.showOrphanFFmpegReminder()
             }
+            sender.reply(toApplicationShouldTerminate: true)
         }
         return .terminateLater
     }
