@@ -28,6 +28,21 @@ else
 fi
 
 echo ""
+echo "=== potrace ==="
+POTRACE_DEST="$BINARIES_DIR/potrace"
+if [ ! -f "$POTRACE_DEST" ]; then
+  if which potrace &>/dev/null; then
+    cp "$(which potrace)" "$POTRACE_DEST"
+    chmod +x "$POTRACE_DEST"
+    echo "  Copied from: $(which potrace)"
+  else
+    echo "  WARNING: potrace not found. Install with: brew install potrace"
+  fi
+else
+  echo "  Already exists, skipping."
+fi
+
+echo ""
 echo "=== Binaries in $BINARIES_DIR ==="
 ls -lh "$BINARIES_DIR"
 echo ""
