@@ -11,6 +11,15 @@ build/
 # Middleware binaries (downloaded separately)
 Middleware/binaries/*
 
+# Rust build artifacts
+Middleware/rust-tool/target/
+
+# Generated iconset staging (icns + xcassets PNGs are committed)
+Installer/AppIcon.iconset/
+
+# Local DMG test outputs
+*.dmg
+
 # Generated
 *.generated.swift
 
