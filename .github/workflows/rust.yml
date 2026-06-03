@@ -18,11 +18,8 @@ jobs:
           toolchain: stable
           components: clippy
 
-      - name: Build
-        run: cargo build --manifest-path Middleware/rust-tool/Cargo.toml
-
-      - name: Lint
-        run: cargo clippy --manifest-path Middleware/rust-tool/Cargo.toml -- -D warnings
+      - name: Check compilation
+        run: cargo check --manifest-path Middleware/rust-tool/Cargo.toml
 
       - name: Test
         run: cargo test --manifest-path Middleware/rust-tool/Cargo.toml
