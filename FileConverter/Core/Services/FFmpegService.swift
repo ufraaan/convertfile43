@@ -87,7 +87,7 @@ enum FFmpegService {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }
         case .avif:
-            args.append(contentsOf: ["-frames:v", "1", "-codec:v", "libaom-av1"])
+            args.append(contentsOf: ["-frames:v", "1", "-codec:v", "libsvtav1"])
             if let quality = settings.quality {
                 args.append(contentsOf: ["-q:v", "\(Int(quality))"])
             }
