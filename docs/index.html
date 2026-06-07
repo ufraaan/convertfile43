@@ -287,6 +287,20 @@
       })
       .catch(() => {});
   })();
+
+  (function () {
+    fetch('https://api.github.com/repos/ufraaan/convertfile43/releases/latest')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.assets) return;
+        var dmg = data.assets.find(function (a) { return a.name.endsWith('.dmg'); });
+        if (!dmg) return;
+        document.querySelectorAll('a[href*="releases/latest"]').forEach(function (a) {
+          a.href = dmg.browser_download_url;
+        });
+      })
+      .catch(function () {});
+  })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
