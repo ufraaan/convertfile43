@@ -108,7 +108,7 @@ enum FFmpegService {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }
         case .pdf:
-            args.append(contentsOf: ["-frames:v", "1"])
+            args.append(contentsOf: ["-frames:v", "1", "-f", "image2"])
             if let scale = settings.scale {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }

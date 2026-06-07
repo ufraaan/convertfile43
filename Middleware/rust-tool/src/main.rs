@@ -484,8 +484,11 @@ fn build_ffmpeg_args(args: &Args, progress_file: Option<&PathBuf>) -> Vec<String
                 cmd.extend(["-vf".into(), format!("scale={s}")]);
             }
         }
-        "ico" | "pdf" | "svg" => {
+        "ico" | "svg" => {
             cmd.extend(["-frames:v".into(), "1".into()]);
+        }
+        "pdf" => {
+            cmd.extend(["-frames:v".into(), "1".into(), "-f".into(), "image2".into()]);
             if let Some(ref s) = args.scale {
                 cmd.extend(["-vf".into(), format!("scale={s}")]);
             }
