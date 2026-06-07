@@ -49,6 +49,14 @@ enum FFmpegService {
             if let fps = settings.fps {
                 args.append(contentsOf: ["-r", "\(fps)"])
             }
+        case .mov:
+            args.append(contentsOf: ["-codec:v", "h264_videotoolbox", "-codec:a", "aac"])
+            if let scale = settings.scale {
+                args.append(contentsOf: ["-vf", "scale=\(scale)"])
+            }
+            if let fps = settings.fps {
+                args.append(contentsOf: ["-r", "\(fps)"])
+            }
         case .avi:
             args.append(contentsOf: ["-codec:v", "h264_videotoolbox", "-codec:a", "aac"])
         case .webm:

@@ -420,7 +420,7 @@ fn build_ffmpeg_args(args: &Args, progress_file: Option<&PathBuf>) -> Vec<String
         "wav" => {
             cmd.extend(["-codec:a".into(), "pcm_s16le".into()]);
         }
-        "mp4" | "mkv" | "avi" => {
+        "mp4" | "mkv" | "mov" | "avi" => {
             cmd.extend(["-codec:v".into(), "h264_videotoolbox".into()]);
             cmd.extend(["-codec:a".into(), "aac".into()]);
             if let Some(ref s) = args.scale {
@@ -500,7 +500,7 @@ fn build_ffmpeg_args(args: &Args, progress_file: Option<&PathBuf>) -> Vec<String
     let is_audio = matches!(args.output_type.as_str(), "mp3" | "aac" | "flac" | "ogg" | "wav");
     let is_video = matches!(
         args.output_type.as_str(),
-        "mp4" | "mkv" | "avi" | "webm" | "ogv" | "gif"
+        "mp4" | "mkv" | "mov" | "avi" | "webm" | "ogv" | "gif"
     );
     if is_audio || is_video {
         if let Some(ref sr) = args.sample_rate {
