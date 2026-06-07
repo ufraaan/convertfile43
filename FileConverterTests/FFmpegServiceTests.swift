@@ -106,7 +106,7 @@ final class FFmpegServiceTests: XCTestCase {
         let imageOutput = "/path/to/output.pdf"
         let settings = ConversionSettings()
         let args = FFmpegService.buildArguments(input: imageInput, output: imageOutput, settings: settings, outputType: .pdf)
-        XCTAssertEqual(args, ["-i", imageInput, "-y", "-nostdin", "-frames:v", "1", "-update", "1", imageOutput])
+        XCTAssertEqual(args, ["-i", imageInput, "-y", "-nostdin", "-frames:v", "1", "-f", "image2", "-update", "1", imageOutput])
     }
 
     func test_buildArguments_imageOutputIsLast() {
