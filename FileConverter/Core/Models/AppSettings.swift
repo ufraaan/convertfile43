@@ -8,7 +8,7 @@ final class AppSettings: @unchecked Sendable {
     var playSoundOnComplete: Bool
 
     init(
-        presets: [ConversionPreset] = PresetStore.load(),
+        presets: [ConversionPreset] = ConversionPreset.defaultPresets,
         maxParallelJobs: Int = AppSettingsDefaults.maxParallelJobs,
         revealInFinderOnComplete: Bool = AppSettingsDefaults.revealInFinderOnComplete,
         playSoundOnComplete: Bool = AppSettingsDefaults.playSoundOnComplete
