@@ -5,7 +5,7 @@
   <p>
     <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&style=flat" alt="macOS 14+">
     <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&style=flat" alt="Swift 6.0">
-    <img src="https://img.shields.io/badge/Version-0.2.0-1d1d1f?style=flat" alt="Version 0.2.0">
+    <img src="https://img.shields.io/badge/Version-0.2.1-1d1d1f?style=flat" alt="Version 0.2.0">
     <img src="https://img.shields.io/badge/FFmpeg-n8.0.1-1d1d1f?style=flat&logo=ffmpeg" alt="FFmpeg n8.0.1">
     <img src="https://img.shields.io/badge/License-GPL_v3-1d1d1f?style=flat" alt="GPL v3">
   </p>
@@ -111,7 +111,7 @@ ffconv is built automatically by an xcode pre-build script (`Middleware/Scripts/
 
 ```bash
 APP="./Build/Build/Products/Release/convertfile43.app"
-bash Installer/build-dmg.sh "$APP" "0.2.0" "convertfile43-0.2.0.dmg"
+bash Installer/build-dmg.sh "$APP" "0.2.1" "convertfile43-0.2.1.dmg"
 ```
 
 ## tests
