@@ -4,7 +4,7 @@ import XCTest
 final class OutputTypeTests: XCTestCase {
     func test_allCases_areCovered() {
         let all = OutputType.allCases
-        XCTAssertEqual(all.count, 18)
+        XCTAssertEqual(all.count, 19)
     }
 
     func test_category_audio() {
@@ -15,7 +15,7 @@ final class OutputTypeTests: XCTestCase {
     }
 
     func test_category_video() {
-        let videoTypes: [OutputType] = [.avi, .mkv, .mp4, .ogv, .webm]
+        let videoTypes: [OutputType] = [.avi, .mkv, .mov, .mp4, .ogv, .webm]
         for type in videoTypes {
             XCTAssertEqual(type.category, .video, "\(type) should be .video")
         }

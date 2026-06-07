@@ -11,7 +11,6 @@
 		08286DEC42FE7F8B85979AC8 /* Settings.default.json in Resources */ = {isa = PBXBuildFile; fileRef = 16007831D2577F0DFD93ADA8 /* Settings.default.json */; };
 		08F658052BF157ABEA630E52 /* ProcessTerminationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03D09E5C7FCAE48007DCFAC /* ProcessTerminationTests.swift */; };
 		0E165F96BC6A218DC8002B21 /* FFmpegProgressParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F84B50E3F5A83CAC91F21E /* FFmpegProgressParserTests.swift */; };
-		114FF95360A2AC4865EA17BF /* PresetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83EC084D685C955F7F60974D /* PresetEditorView.swift */; };
 		142D04008BFF5C11BA6221BE /* ProcessTermination.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12C2C17D33BBD2C25590C43 /* ProcessTermination.swift */; };
 		17B23FFD9F2951A8BB138001 /* ConversionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF45C75D905C642C154ED8C /* ConversionState.swift */; };
 		1DE29791F167CD6F2AA73648 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 555A641AE2E3D6B9B8345A39 /* Assets.xcassets */; };
@@ -85,7 +84,6 @@
 		6716A1939E0FB9D7AF9EE221 /* PresetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetListView.swift; sourceTree = "<group>"; };
 		67F20E8BB8A1F8E47CD41A41 /* ConversionPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionPreset.swift; sourceTree = "<group>"; };
 		76EB53C77C53BCDCC34A1D23 /* LoggerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerService.swift; sourceTree = "<group>"; };
-		83EC084D685C955F7F60974D /* PresetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetEditorView.swift; sourceTree = "<group>"; };
 		86E253909386B0A969AD815D /* OutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputType.swift; sourceTree = "<group>"; };
 		9A4FE132C02B3073021F74DF /* LibreOfficeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibreOfficeServiceTests.swift; sourceTree = "<group>"; };
 		A9470AFAF87DCE09AF3376B1 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
@@ -141,7 +139,6 @@
 		46A9E7619AC2C3A14284AF77 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				83EC084D685C955F7F60974D /* PresetEditorView.swift */,
 				6716A1939E0FB9D7AF9EE221 /* PresetListView.swift */,
 				F163DA1089AA9D2E335805D0 /* SettingsView.swift */,
 				D593DE6148C1E811858210DE /* SettingsViewModel.swift */,
@@ -458,7 +455,6 @@
 				CBF704B5C94501B4C19EA81D /* MenuBarStatusLabel.swift in Sources */,
 				916F581517C94EC1AC9C4857 /* NotificationService.swift in Sources */,
 				5485A6767777DEF170EFFA73 /* OutputType.swift in Sources */,
-				114FF95360A2AC4865EA17BF /* PresetEditorView.swift in Sources */,
 				DF19637669A98C0693923942 /* PresetListView.swift in Sources */,
 				C4FC0AEC7BED919E2EA70F48 /* PresetStore.swift in Sources */,
 				142D04008BFF5C11BA6221BE /* ProcessTermination.swift in Sources */,

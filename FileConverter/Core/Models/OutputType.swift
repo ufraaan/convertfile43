@@ -1,7 +1,7 @@
 import Foundation
 
 enum OutputType: String, Codable, CaseIterable, Sendable {
-    case aac, avi, avif, flac, gif, ico, jpg, mp3, mp4, mkv, ogg, ogv, pdf, png, svg, wav, webm, webp
+    case aac, avi, avif, flac, gif, ico, jpg, mov, mp3, mp4, mkv, ogg, ogv, pdf, png, svg, wav, webm, webp
 
     var displayName: String {
         rawValue.uppercased()
@@ -19,7 +19,7 @@ enum OutputType: String, Codable, CaseIterable, Sendable {
     var category: Category {
         switch self {
         case .aac, .flac, .mp3, .ogg, .wav: return .audio
-        case .avi, .mkv, .mp4, .ogv, .webm: return .video
+        case .avi, .mkv, .mov, .mp4, .ogv, .webm: return .video
         case .avif, .gif, .ico, .jpg, .png, .svg, .webp: return .image
         case .pdf: return .document
         }

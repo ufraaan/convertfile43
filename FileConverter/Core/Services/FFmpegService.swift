@@ -49,6 +49,14 @@ enum FFmpegService {
             if let fps = settings.fps {
                 args.append(contentsOf: ["-r", "\(fps)"])
             }
+        case .mov:
+            args.append(contentsOf: ["-codec:v", "h264_videotoolbox", "-codec:a", "aac"])
+            if let scale = settings.scale {
+                args.append(contentsOf: ["-vf", "scale=\(scale)"])
+            }
+            if let fps = settings.fps {
+                args.append(contentsOf: ["-r", "\(fps)"])
+            }
         case .avi:
             args.append(contentsOf: ["-codec:v", "h264_videotoolbox", "-codec:a", "aac"])
         case .webm:
@@ -87,7 +95,7 @@ enum FFmpegService {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }
         case .avif:
-            args.append(contentsOf: ["-frames:v", "1", "-codec:v", "libaom-av1"])
+            args.append(contentsOf: ["-frames:v", "1", "-codec:v", "libsvtav1"])
             if let quality = settings.quality {
                 args.append(contentsOf: ["-q:v", "\(Int(quality))"])
             }
@@ -100,7 +108,7 @@ enum FFmpegService {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }
         case .pdf:
-            args.append(contentsOf: ["-frames:v", "1"])
+            args.append(contentsOf: ["-frames:v", "1", "-f", "image2"])
             if let scale = settings.scale {
                 args.append(contentsOf: ["-vf", "scale=\(scale)"])
             }

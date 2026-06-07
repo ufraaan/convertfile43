@@ -1,7 +1,7 @@
 #!/bin/bash
 # Downloads the static ffmpeg binary used by convertfile43.
 # Copied into the .app bundle at build time by project.yml's preBuildScript.
-# Requires: curl
+# Requires: curl, unzip
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -12,14 +12,19 @@ mkdir -p "$BINARIES_DIR"
 echo "=== ffmpeg (static) ==="
 FFMPEG_DEST="$BINARIES_DIR/ffmpeg"
 if [ ! -f "$FFMPEG_DEST" ]; then
-  TAG="n8.0.1-1"
-  BASE_URL="https://github.com/shaka-project/static-ffmpeg-binaries/releases/download/$TAG"
   if [ "$ARCH" = "arm64" ]; then
-    echo "Downloading ffmpeg for arm64..."
-    curl -fL "$BASE_URL/ffmpeg-osx-arm64" -o "$FFMPEG_DEST"
+    echo "Downloading ffmpeg 8.1 for arm64 (Apple Silicon)..."
+    curl -fL "https://www.osxexperts.net/ffmpeg81arm.zip" -o /tmp/ffmpeg81arm.zip
+    unzip -o /tmp/ffmpeg81arm.zip ffmpeg -d "$BINARIES_DIR"
+    rm -f /tmp/ffmpeg81arm.zip
+    # Remove quarantine attributes and ad-hoc sign for Apple Silicon
+    xattr -cr "$FFMPEG_DEST" 2>/dev/null || true
+    codesign -s - "$FFMPEG_DEST" 2>/dev/null || true
   else
-    echo "Downloading ffmpeg for x86_64..."
-    curl -fL "$BASE_URL/ffmpeg-osx-x64" -o "$FFMPEG_DEST"
+    echo "Downloading ffmpeg 8.0 for x86_64 (Intel)..."
+    curl -fL "https://www.osxexperts.net/ffmpeg80intel.zip" -o /tmp/ffmpeg80intel.zip
+    unzip -o /tmp/ffmpeg80intel.zip ffmpeg -d "$BINARIES_DIR"
+    rm -f /tmp/ffmpeg80intel.zip
   fi
   chmod +x "$FFMPEG_DEST"
   echo "  ffmpeg version: $($FFMPEG_DEST -version 2>&1 | head -1)"

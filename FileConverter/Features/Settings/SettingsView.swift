@@ -18,7 +18,7 @@ struct SettingsView: View {
             AboutView()
                 .tabItem { Label("About", systemImage: "info.circle") }
         }
-        .frame(width: 560, height: 480)
+        .frame(width: 520, height: 420)
         .onDisappear {
             viewModel.save(settings: settings)
         }
@@ -37,28 +37,22 @@ struct GeneralSettingsView: View {
 
             Section("Completion") {
                 Toggle("Reveal in Finder on complete", isOn: $bindableSettings.revealInFinderOnComplete)
-                Text("Opens Finder and selects the converted file when a job finishes.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
 
                 Toggle("Play sound on complete", isOn: $bindableSettings.playSoundOnComplete)
-                Text("Plays a short system sound when conversion succeeds.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
             Section("Bundled Tools") {
-                Label(
-                    AppInfo.isFFmpegBundled ? "ffmpeg — bundled" : "ffmpeg — not found in app bundle",
-                    systemImage: AppInfo.isFFmpegBundled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
-                )
-                .foregroundStyle(AppInfo.isFFmpegBundled ? Color.primary : Color.orange)
+                HStack(spacing: 8) {
+                    Image(systemName: AppInfo.isFFmpegBundled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                        .foregroundStyle(AppInfo.isFFmpegBundled ? .green : .orange)
+                    Text(AppInfo.isFFmpegBundled ? "ffmpeg — bundled" : "ffmpeg — not found in app bundle")
+                }
 
-                Label(
-                    AppInfo.isFFconvBundled ? "ffconv — bundled" : "ffconv — not found (ffmpeg fallback)",
-                    systemImage: AppInfo.isFFconvBundled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
-                )
-                .foregroundStyle(AppInfo.isFFconvBundled ? Color.primary : Color.orange)
+                HStack(spacing: 8) {
+                    Image(systemName: AppInfo.isFFconvBundled ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                        .foregroundStyle(AppInfo.isFFconvBundled ? .green : .orange)
+                    Text(AppInfo.isFFconvBundled ? "ffconv — bundled" : "ffconv — not found (ffmpeg fallback)")
+                }
             }
         }
         .formStyle(.grouped)
@@ -67,26 +61,24 @@ struct GeneralSettingsView: View {
 
 struct HelpSettingsView: View {
     var body: some View {
-        ScrollView {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("How to use convertfile43")
+                .font(.title2.bold())
+
             VStack(alignment: .leading, spacing: 12) {
-                Text("How to use convertfile43")
-                    .font(.title2.bold())
-
-                Group {
-                    Label("Copy files in Finder (⌘C)", systemImage: "1.circle.fill")
-                    Label("Click the menu bar icon", systemImage: "2.circle.fill")
-                    Label("Choose Audio, Video, Images, or Documents", systemImage: "3.circle.fill")
-                    Label("Pick a preset — converted files appear beside originals", systemImage: "4.circle.fill")
-                }
-                .font(.body)
-
-                Text("The app lives in your menu bar. Progress appears on the icon and under Active conversions while a job runs.")
-                    .foregroundStyle(.secondary)
-                    .font(.callout)
+                Label("Copy files in Finder (⌘C)", systemImage: "1.circle.fill")
+                Label("Click the menu bar icon", systemImage: "2.circle.fill")
+                Label("Choose Audio, Video, Images, or Documents", systemImage: "3.circle.fill")
+                Label("Pick a preset — converted files appear beside originals", systemImage: "4.circle.fill")
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Text("The app lives in your menu bar. Progress appears on the icon and under Active conversions while a job runs.")
+                .foregroundStyle(.secondary)
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
@@ -94,22 +86,23 @@ struct AboutView: View {
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "arrow.left.arrow.right.square")
-                .font(.system(size: 64))
+                .font(.system(size: 48))
                 .foregroundStyle(.tint)
 
             Text("convertfile43")
-                .font(.title)
+                .font(.title2)
 
             Text("Version \(AppInfo.shortVersion)")
                 .foregroundStyle(.secondary)
+                .font(.subheadline)
 
             Text("Copy files in Finder (⌘C), then pick a preset from the menu bar.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
-
-            Spacer()
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
 }
